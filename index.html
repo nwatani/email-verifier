@@ -147,7 +147,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
         <div>
           <div class="setting-section">
             <h3 data-i18n="bulkModeTitle">Verification mode</h3>
-            <p data-i18n="bulkModeDesc">Use browser checks by default. Remote mode uses your configured verification API.</p>
+            <p data-i18n="bulkModeDesc">Use browser checks by default. Bulk browser checks reuse domain/DNS results across the list. Remote mode uses your configured verification API.</p>
             <select id="bulkModeSelect" aria-label="Bulk verification mode"><option value="browser" data-i18n="browserMode">Browser checks</option><option value="remote" data-i18n="deepMode">Deep / remote verification</option></select>
             <div class="field"><label for="bulkConcurrency" data-i18n="concurrency">Concurrency</label><select id="bulkConcurrency"><option value="1">1</option><option value="2">2</option><option value="4" selected>4</option><option value="6">6</option><option value="8">8</option></select></div>
           </div>
@@ -237,7 +237,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 (() => {
   'use strict';
 
-  const APP_VERSION = '1.2.7';
+  const APP_VERSION = '1.3.0';
   const STORAGE_KEY = 'emailVerify.settings.v1';
   const HISTORY_KEY = 'emailVerify.history.v1';
   const SESSION_KEYS = {saas:'emailVerify.apiKey.session.saas', selfhost:'emailVerify.apiKey.session.selfhost'};
@@ -303,7 +303,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       singleCheck:'Single check', bulkVerify:'Bulk verify', history:'History', bulkTitle:'Verify multiple email addresses',
       bulkDesc:'Paste one address per line, or upload a TXT/CSV/XLSX file. Browser mode keeps the work in your browser except for DNS lookups.',
       uploadFile:'Upload file', prepareList:'Prepare list', startVerification:'Start verification', bulkModeTitle:'Verification mode',
-      bulkModeDesc:'Use browser checks by default. Remote mode uses your configured verification API.', browserMode:'Browser checks',
+      bulkModeDesc:'Use browser checks by default. Bulk browser checks reuse domain/DNS results across the list. Remote mode uses your configured verification API.', browserMode:'Browser checks',
       deepMode:'Deep / remote verification', concurrency:'Concurrency', bulkPrivacyTitle:'Before you start', pause:'Pause', cancel:'Cancel',
       exportCsv:'Export CSV', exportXlsx:'Export XLSX', exportJson:'Export JSON', colEmail:'Email', colStatus:'Status', colDomain:'Domain', colMx:'MX',
       colDisposable:'Disposable', colRole:'Role', colNote:'Note', noBulkResults:'No results yet.', historyTitle:'Local history',
@@ -356,7 +356,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       singleCheck:'فحص مفرد', bulkVerify:'فحص جماعي', history:'السجل', bulkTitle:'التحقق من عدة عناوين بريد',
       bulkDesc:'ألصق عنوانًا في كل سطر أو ارفع ملف TXT/CSV/XLSX. في وضع المتصفح تتم المعالجة داخله باستثناء استعلامات DNS.',
       uploadFile:'رفع ملف', prepareList:'تجهيز القائمة', startVerification:'بدء التحقق', bulkModeTitle:'وضع التحقق',
-      bulkModeDesc:'استخدم فحص المتصفح افتراضيًا. الوضع المتقدم يستخدم خدمة التحقق التي تقوم بإعدادها.', browserMode:'فحص المتصفح',
+      bulkModeDesc:'استخدم فحص المتصفح افتراضيًا. يعيد التحقق الجماعي استخدام نتائج النطاق وDNS داخل القائمة. الوضع المتقدم يستخدم خدمة التحقق التي تقوم بإعدادها.', browserMode:'فحص المتصفح',
       deepMode:'تحقق متقدم / عن بُعد', concurrency:'التوازي', bulkPrivacyTitle:'قبل البدء', pause:'إيقاف مؤقت', cancel:'إلغاء',
       exportCsv:'تصدير CSV', exportXlsx:'تصدير XLSX', exportJson:'تصدير JSON', colEmail:'البريد', colStatus:'الحالة', colDomain:'النطاق', colMx:'MX',
       colDisposable:'مؤقت', colRole:'وظيفي', colNote:'ملاحظة', noBulkResults:'لا توجد نتائج بعد.', historyTitle:'السجل المحلي',
@@ -649,10 +649,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   }
   function updateProgress(label,percent){ $('singleProgress').classList.remove('hidden');$('progressLabel').textContent=label;$('progressPercent').textContent=percent+'%';$('progressFill').style.width=percent+'%';$('progressFill').parentElement.setAttribute('aria-valuenow',String(percent));$('cancelSingleBtn').disabled=!state.abort; }
 
-  async function verifyBrowser(raw, signal){
-    const parsed=validateEmailSyntax(raw); updateProgress(t('syntax'),18); if(!parsed.valid) return browserResult(parsed,{domainExists:false,route:'none',hasMx:false,mxRecords:[],provider:'DNS',hasFallback:false},checkLocalSignals(parsed));
+  async function verifyBrowser(raw, signal, dnsOverride=null, parsedOverride=null){
+    const parsed=parsedOverride||validateEmailSyntax(raw); updateProgress(t('syntax'),18); if(!parsed.valid) return browserResult(parsed,{domainExists:false,route:'none',hasMx:false,mxRecords:[],provider:'DNS',hasFallback:false},checkLocalSignals(parsed));
     if(signal?.aborted) throw new DOMException('Aborted','AbortError'); updateProgress(t('domain'),38);
-    const dns=await resolveDomain(parsed.asciiDomain,signal); if(signal?.aborted) throw new DOMException('Aborted','AbortError');
+    const dns=dnsOverride||await resolveDomain(parsed.asciiDomain,signal); if(signal?.aborted) throw new DOMException('Aborted','AbortError');
     updateProgress(t('extra'),70); const signals=checkLocalSignals(parsed); const res=browserResult(parsed,dns,signals); updateProgress(t('complete'),100); return res;
   }
 
@@ -816,7 +816,39 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   function prepareBulk(){ const input=$('bulkInput').value; if(input.length>MAX_BULK_INPUT_CHARS){showToast(t('tooMany'),t('fileTooLarge'),'error');return;} const parsed=parseEmails(input); if(parsed.total>MAX_BULK){showToast(t('tooMany'),'','error');return;} if(!parsed.items.length){showToast(t('emptyList'),'','error');return;} state.bulkItems=parsed.items; state.bulkResults=[]; state.bulkPage=1; state.bulkPaused=false; $('bulkProgressArea').classList.remove('hidden'); renderBulkSummary(); renderBulkTable(); updateBulkProgress(0,state.bulkItems.length); updateBulkControls(); showToast(t('prepared'),parsed.duplicates?t('duplicatesRemoved').replace('{count}',String(parsed.duplicates)):'','success'); }
   function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
   async function processBulkBrowser(){
-    const total=state.bulkItems.length; let cursor=0; let renderedCount=0; const results=new Array(total); const worker=async()=>{while(true){if(state.bulkAbort?.aborted) return; while(state.bulkPaused){await sleep(180);if(state.bulkAbort?.aborted)return;} const idx=cursor++; if(idx>=total)return; const item=state.bulkItems[idx]; let result; try{result=await verifyBrowser(item.input,state.bulkAbort.signal);}catch(err){ result={input:item.input,normalized:item.input,status:'unknown',confidence:'limitedConfidence',mode:'browser',source:t('browserAssessment'),explanation:friendlyError(err),syntax:{valid:item.parsed.valid,local:item.parsed.local,domain:item.parsed.domain},domain:{exists:null,route:'none',suggestion:''},mx:{available:null,records:[],provider:'DNS'},smtp:{checked:false},disposable:null,role:null,provider:'unknown',notes:[friendlyError(err)],raw:{error:String(err)}}; } results[idx]=result; state.bulkResults=results.filter(Boolean); if(state.bulkResults.length-renderedCount>=5 || state.bulkResults.length===total){renderedCount=state.bulkResults.length;renderBulkTable();} updateBulkProgress(state.bulkResults.length,total,state.bulkPaused?t('bulkPaused'):t('bulkRunning')); } };
+    const total=state.bulkItems.length; const uniqueDomains=[...new Set(state.bulkItems.map(x=>x.parsed.valid?x.parsed.asciiDomain:'').filter(Boolean))]; const domainMap=new Map(); let domainCursor=0;
+    updateBulkProgress(0,total,t('domain'));
+    const resolveWorker=async()=>{
+      while(true){
+        if(state.bulkAbort?.aborted) return;
+        const idx=domainCursor++; if(idx>=uniqueDomains.length)return;
+        const domain=uniqueDomains[idx];
+        try{domainMap.set(domain,{value:await resolveDomain(domain,state.bulkAbort.signal)});}
+        catch(error){domainMap.set(domain,{error});}
+      }
+    };
+    const domainWorkers=Array.from({length:Math.min(4,clamp(Number($('bulkConcurrency').value)||4,1,8))},resolveWorker);
+    await Promise.all(domainWorkers);
+    if(state.bulkAbort?.aborted) return [];
+
+    let cursor=0; let renderedCount=0; const results=new Array(total);
+    const worker=async()=>{
+      while(true){
+        if(state.bulkAbort?.aborted) return;
+        while(state.bulkPaused){await sleep(180);if(state.bulkAbort?.aborted)return;}
+        const idx=cursor++; if(idx>=total)return; const item=state.bulkItems[idx]; let result;
+        try{
+          const domainInfo=item.parsed.valid?domainMap.get(item.parsed.asciiDomain):null;
+          if(domainInfo?.error) throw domainInfo.error;
+          result=await verifyBrowser(item.input,state.bulkAbort.signal,domainInfo?.value||null,item.parsed);
+        }catch(err){
+          result={input:item.input,normalized:item.input,status:'unknown',confidence:'limitedConfidence',mode:'browser',source:t('browserAssessment'),explanation:friendlyError(err),syntax:{valid:item.parsed.valid,local:item.parsed.local,domain:item.parsed.domain},domain:{exists:null,route:'none',suggestion:''},mx:{available:null,records:[],provider:'DNS'},smtp:{checked:false},disposable:null,role:null,provider:'unknown',notes:[friendlyError(err)],raw:{error:String(err)}};
+        }
+        results[idx]=result; state.bulkResults=results.filter(Boolean);
+        if(state.bulkResults.length-renderedCount>=5 || state.bulkResults.length===total){renderedCount=state.bulkResults.length;renderBulkTable();}
+        updateBulkProgress(state.bulkResults.length,total,state.bulkPaused?t('bulkPaused'):t('bulkRunning'));
+      }
+    };
     const workers=Array.from({length:clamp(Number($('bulkConcurrency').value)||4,1,8)},worker); await Promise.all(workers); return results;
   }
   async function remoteBulkJob(){
