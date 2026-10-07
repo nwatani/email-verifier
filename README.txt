@@ -1,4 +1,4 @@
-Email Verifier v1.2.5 — GitHub Pages Package
+Email Verifier v1.2.7 — GitHub Pages Package
 
 Upload the contents of this folder to your GitHub Pages site.
 
@@ -9,6 +9,6 @@ Files
 
 The browser application performs browser-safe syntax/domain/DNS checks and can optionally use a configured remote verification API. The portable Windows application performs local DNS and SMTP verification without requiring a hosted verification server.
 
-The portable application's XLSX report export bug in v1.2.4 has been fixed in v1.2.5. Numeric SMTP response codes are now handled correctly by the XLSX export endpoint.
+The portable application monitors the browser session with heartbeats and automatically closes after the browser is closed. A browser-close signal normally triggers shutdown after a short grace period; heartbeat cleanup provides a fallback, while multiple open tabs are tracked independently and active verification requests are allowed to finish.
 
 No email message is sent during verification.
