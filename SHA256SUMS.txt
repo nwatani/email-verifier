@@ -1,2 +1,2 @@
-6340a501177f18e36e740abe8457a62f73ea77079edd5bbc961a10a95dc6a9a8  index.html
-65a59fee479cf9b8f8509294e039278c4f0df86284a70f80434b88af0821e2d2  EmailVerifier-Portable.exe
+/mnt/data/EmailVerifier-final-package/index.html  b3e401e3f8a67b70a2409516c3582548388f0183dcb6fb519264dfed635bdc0b
+/mnt/data/EmailVerifier-final-package/EmailVerifier-Portable.exe  bee22b633cc8179f60731935144f36985f8a5fe671c4f4a2d9bfb28084ac2d66

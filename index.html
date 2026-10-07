@@ -60,7 +60,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .bulk-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.textarea{width:100%;min-height:230px;resize:vertical;border:1px solid var(--border);border-radius:13px;background:var(--surface);color:var(--text);padding:13px}.drop{border:1.5px dashed var(--border);border-radius:13px;padding:16px;text-align:center;background:var(--surface2);margin-top:10px}.drop strong{display:block;font-size:13px}.drop span{font-size:11px;color:var(--muted)}.bulk-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.bulk-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:16px 0}.sum{padding:11px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}.sum strong{display:block;font-size:20px}.sum span{font-size:11px;color:var(--muted)}
 .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:13px}.results-table{width:100%;border-collapse:collapse;min-width:800px}.results-table th,.results-table td{padding:10px 11px;border-bottom:1px solid var(--border);text-align:start;font-size:12px;vertical-align:top}.results-table th{background:var(--surface2);position:sticky;top:0;z-index:1}.results-table tbody tr:last-child td{border-bottom:0}.ellipsis{max-width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}.pill.safe{background:var(--good-bg);color:var(--good)}.pill.risky{background:var(--warn-bg);color:var(--warn)}.pill.invalid{background:var(--bad-bg);color:var(--bad)}.pill.unknown{background:var(--unknown-bg);color:var(--unknown)}
-.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}.pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px}.pager .secondary{min-width:92px}
 .footer{max-width:1120px;margin:auto;width:100%;padding:0 20px 28px;text-align:center;color:var(--muted);font-size:11px}.footer a{text-decoration:none}
 .modal{position:fixed;inset:0;background:rgba(4,10,20,.52);display:grid;place-items:center;z-index:50;padding:18px}.modal-card{width:min(760px,100%);max-height:min(88vh,920px);overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:center}.modal-head h2{margin:0;font-size:18px}.modal-body{padding:20px}.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .setting-section{padding:15px;border:1px solid var(--border);border-radius:14px;margin-bottom:12px}.setting-section h3{margin:0 0 5px;font-size:14px}.setting-section p{margin:0 0 11px;font-size:12px;color:var(--muted)}.field{margin-top:11px}.field label{display:block;font-size:12px;font-weight:750;margin-bottom:6px}.field input,.field select{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text)}.inline{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.inline>*{flex:1}.checkbox{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);margin-top:10px;cursor:pointer}.checkbox input{width:16px!important;min-width:16px;height:16px;padding:0;border:0;margin:2px 0 0;flex:0 0 16px;accent-color:var(--accent)}.field-note{margin-top:6px;font-size:11px;line-height:1.45;color:var(--muted)}.warn-box{border:1px solid color-mix(in srgb,var(--warn) 30%,var(--border));background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:10px 11px;font-size:12px;margin-top:11px}
@@ -114,9 +114,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     <div class="desktop-actions"><a class="primary" id="desktopDownload" href="EmailVerifier-Portable.exe" download data-i18n="desktopVerifierButton">Download for Windows</a></div>
   </section>
 
-  <div class="progress hidden" id="singleProgress" aria-live="polite">
+  <div class="progress hidden" id="singleProgress" aria-live="polite" role="status">
     <div class="progress-top"><span id="progressLabel">Checking…</span><span id="progressPercent">0%</span><button class="secondary" id="cancelSingleBtn" data-i18n="cancel">Cancel</button></div>
-    <div class="progress-bar"><span id="progressFill"></span></div>
+    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressFill"></span></div>
   </div>
 
   <section class="card result-card hidden" id="resultCard" aria-live="polite">
@@ -129,19 +129,19 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   </section>
 
   <div class="tabs" role="tablist" aria-label="Tools">
-    <button class="tab active" id="singleTab" data-tab="single" role="tab" aria-selected="true" data-i18n="singleCheck">Single check</button>
-    <button class="tab" id="bulkTab" data-tab="bulk" role="tab" aria-selected="false" data-i18n="bulkVerify">Bulk verify</button>
-    <button class="tab" id="historyTab" data-tab="history" role="tab" aria-selected="false" data-i18n="history">History</button>
+    <button class="tab active" id="singleTab" data-tab="single" role="tab" aria-selected="true" aria-controls="singleSection" data-i18n="singleCheck">Single check</button>
+    <button class="tab" id="bulkTab" data-tab="bulk" role="tab" aria-selected="false" aria-controls="bulkPanel" data-i18n="bulkVerify">Bulk verify</button>
+    <button class="tab" id="historyTab" data-tab="history" role="tab" aria-selected="false" aria-controls="historyPanel" data-i18n="history">History</button>
   </div>
 
-  <section class="panel hidden" id="bulkPanel">
+  <section class="panel hidden" id="bulkPanel" role="tabpanel" aria-labelledby="bulkTab" tabindex="-1">
     <div class="card panel-card">
       <h2 class="panel-title" data-i18n="bulkTitle">Verify multiple email addresses</h2>
-      <p class="panel-desc" data-i18n="bulkDesc">Paste one address per line, or upload a TXT/CSV file. Browser mode keeps the work in your browser except for DNS lookups.</p>
+      <p class="panel-desc" data-i18n="bulkDesc">Paste one address per line, or upload a TXT/CSV/XLSX file. Browser mode keeps the work in your browser except for DNS lookups.</p>
       <div class="bulk-grid">
         <div>
-          <textarea class="textarea" id="bulkInput" placeholder="name@example.com\nteam@example.org"></textarea>
-          <div class="bulk-actions"><button class="secondary" id="loadFileBtn" data-i18n="uploadFile">Upload file</button><input type="file" id="fileInput" accept=".txt,.csv,text/plain,text/csv" class="hidden"><button class="secondary" id="normalizeBtn" data-i18n="prepareList">Prepare list</button><button class="primary" id="bulkStartBtn" data-i18n="startVerification">Start verification</button></div>
+          <textarea class="textarea" id="bulkInput" maxlength="1000000" placeholder="name@example.com\nteam@example.org"></textarea>
+          <div class="bulk-actions"><button class="secondary" id="loadFileBtn" data-i18n="uploadFile">Upload file</button><input type="file" id="fileInput" accept=".txt,.csv,.xlsx,text/plain,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden"><button class="secondary" id="normalizeBtn" data-i18n="prepareList">Prepare list</button><button class="primary" id="bulkStartBtn" data-i18n="startVerification">Start verification</button></div>
         </div>
         <div>
           <div class="setting-section">
@@ -161,11 +161,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
         <div class="progress"><div class="progress-top"><span id="bulkProgressLabel">0 / 0</span><span id="bulkProgressPercent">0%</span></div><div class="progress-bar"><span id="bulkProgressFill"></span></div></div>
         <div class="bulk-actions"><button class="secondary" id="bulkPauseBtn" data-i18n="pause" disabled>Pause</button><button class="secondary" id="bulkCancelBtn" data-i18n="cancel" disabled>Cancel</button><button class="secondary" id="exportCsvBtn" data-i18n="exportCsv">Export CSV</button><button class="secondary" id="exportJsonBtn" data-i18n="exportJson">Export JSON</button></div>
       </div>
-      <div class="table-wrap" style="margin-top:16px"><table class="results-table" id="bulkTable"><thead><tr><th data-i18n="colEmail">Email</th><th data-i18n="colStatus">Status</th><th data-i18n="colDomain">Domain</th><th data-i18n="colMx">MX</th><th data-i18n="colDisposable">Disposable</th><th data-i18n="colRole">Role</th><th data-i18n="colNote">Note</th></tr></thead><tbody id="bulkTbody"><tr><td colspan="7"><div class="empty" data-i18n="noBulkResults">No results yet.</div></td></tr></tbody></table></div>
+      <div class="table-wrap" style="margin-top:16px"><table class="results-table" id="bulkTable"><thead><tr><th data-i18n="colEmail">Email</th><th data-i18n="colStatus">Status</th><th data-i18n="colDomain">Domain</th><th data-i18n="colMx">MX</th><th data-i18n="colDisposable">Disposable</th><th data-i18n="colRole">Role</th><th data-i18n="colNote">Note</th></tr></thead><tbody id="bulkTbody"><tr><td colspan="7"><div class="empty" data-i18n="noBulkResults">No results yet.</div></td></tr></tbody></table></div><div class="pager hidden" id="bulkPager"><button class="secondary" id="bulkPrevBtn" data-i18n="previous">Previous</button><span id="bulkPageInfo" class="mode-note"></span><button class="secondary" id="bulkNextBtn" data-i18n="next">Next</button></div>
     </div>
   </section>
 
-  <section class="panel hidden" id="historyPanel">
+  <section class="panel hidden" id="historyPanel" role="tabpanel" aria-labelledby="historyTab" tabindex="-1">
     <div class="card panel-card">
       <h2 class="panel-title" data-i18n="historyTitle">Local history</h2>
       <p class="panel-desc" data-i18n="historyDesc">History is off by default. When enabled, results are saved only in this browser.</p>
@@ -186,7 +186,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
         <div class="field"><label for="defaultMode" data-i18n="defaultMode">Default mode</label><select id="defaultMode"><option value="browser" data-i18n="browserMode">Browser checks</option><option value="remote" data-i18n="deepMode">Deep / remote verification</option></select></div>
         <div class="field"><label for="apiAuth" data-i18n="apiAuth">Authentication type</label><select id="apiAuth"><option value="saas" data-i18n="authSaaS">Reacher SaaS API key</option><option value="selfhost" data-i18n="authSelfHosted">Self-hosted Reacher shared secret</option></select><div class="field-note" id="apiAuthNote" data-i18n="authSaaSNote">Uses the Authorization header with your Reacher API key.</div></div>
         <div class="field"><label for="apiBase" data-i18n="apiBase">Reacher-compatible API base URL</label><input id="apiBase" type="url" inputmode="url" placeholder="https://api.reacher.email"><div class="field-note" id="apiBaseNote" data-i18n="apiBaseNote">For a self-hosted service, use its HTTPS URL when this page is hosted on GitHub Pages.</div></div>
-        <div class="field"><label for="apiKey" id="apiCredentialLabel" data-i18n="apiKey">API key</label><input id="apiKey" type="password" autocomplete="off" placeholder="Not stored by default"><label class="checkbox" for="rememberKey"><input id="rememberKey" type="checkbox"><span data-i18n="rememberKey">Remember this key for this browser tab only.</span></label></div>
+        <div class="field"><label for="apiKey" id="apiCredentialLabel" data-i18n="apiKey">API key</label><input id="apiKey" type="password" autocomplete="new-password" placeholder="Not stored by default"><label class="checkbox" for="rememberKey"><input id="rememberKey" type="checkbox"><span data-i18n="rememberKey">Remember this key for this browser tab only.</span></label></div>
         <div class="field inline"><button class="secondary" id="testApiBtn" data-i18n="testConnection">Test connection</button><span id="apiTestResult" class="mode-note"></span></div>
         <div class="warn-box" data-i18n="apiWarning">API keys entered here are exposed to this browser session. A static GitHub Pages file cannot keep a client-side API key secret.</div>
       </div>
@@ -236,10 +236,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 (() => {
   'use strict';
 
-  const APP_VERSION = '1.1.0';
+  const APP_VERSION = '1.2.3';
   const STORAGE_KEY = 'emailVerify.settings.v1';
   const HISTORY_KEY = 'emailVerify.history.v1';
-  const SESSION_KEY = 'emailVerify.apiKey.session';
+  const SESSION_KEYS = {saas:'emailVerify.apiKey.session.saas', selfhost:'emailVerify.apiKey.session.selfhost'};
+  const MAX_FILE_BYTES = 4 * 1024 * 1024;
+  const MAX_XLSX_UNCOMPRESSED_BYTES = 32 * 1024 * 1024;
+  const MAX_BULK_INPUT_CHARS = 1000000;
+  const BULK_PAGE_SIZE = 100;
+  const BULK_POLL_MAX_MS = 10 * 60 * 1000;
   const MAX_BULK = 2000;
   const MAX_HISTORY = 100;
   const DEFAULT_SETTINGS = {
@@ -284,7 +289,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   const $ = id => document.getElementById(id);
   const state = {
     settings: loadSettings(), language:'en', theme:'system', currentMode:'browser', currentResult:null, currentRaw:null,
-    abort:null, bulkAbort:null, bulkPaused:false, bulkResults:[], bulkItems:[], lastFocus:null, dnsCache:new Map()
+    abort:null, bulkAbort:null, bulkPaused:false, bulkResults:[], bulkItems:[], bulkPage:1, lastFocus:null, dnsCache:new Map(), openModalId:null
   };
 
   const I18N = {
@@ -295,7 +300,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       changeMode:'Change mode', emailLabel:'Email address', verify:'Verify', paste:'Paste', clear:'Clear',
       inputHint:'One address at a time. Press Enter to verify.', copySummary:'Copy summary', viewTechnical:'Technical details',
       singleCheck:'Single check', bulkVerify:'Bulk verify', history:'History', bulkTitle:'Verify multiple email addresses',
-      bulkDesc:'Paste one address per line, or upload a TXT/CSV file. Browser mode keeps the work in your browser except for DNS lookups.',
+      bulkDesc:'Paste one address per line, or upload a TXT/CSV/XLSX file. Browser mode keeps the work in your browser except for DNS lookups.',
       uploadFile:'Upload file', prepareList:'Prepare list', startVerification:'Start verification', bulkModeTitle:'Verification mode',
       bulkModeDesc:'Use browser checks by default. Remote mode uses your configured verification API.', browserMode:'Browser checks',
       deepMode:'Deep / remote verification', concurrency:'Concurrency', bulkPrivacyTitle:'Before you start', pause:'Pause', cancel:'Cancel',
@@ -309,7 +314,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       privacySection:'Privacy', privacySectionDesc:'Use the least amount of external processing possible.', saveHistory:'Save local history',
       saveHistoryDesc:'Keep recent results in this browser only.', requestGravatar:'Request Gravatar in remote checks',
       requestGravatarDesc:'Optional provider-side signal. Off by default.', dnsSection:'DNS', dnsSectionDesc:'Browser mode uses HTTPS DNS lookups for domain checks.',
-      interfaceSection:'Interface', language:'Language', theme:'Theme', themeSystem:'System', themeLight:'Light', themeDark:'Dark', done:'Done',
+      interfaceSection:'Interface', language:'Language', theme:'Theme', themeSystem:'System', themeLight:'Light', themeDark:'Dark', themeToggleToLight:'Switch to light theme', themeToggleToDark:'Switch to dark theme', done:'Done',
       helpTitle:'How this works', helpBrowserTitle:'Browser checks', helpBrowser:'The tool validates syntax, normalizes the domain, checks mail routing through HTTPS DNS, and identifies common disposable and role-account patterns. It cannot directly prove that an individual mailbox exists from a static web page.',
       helpDeepTitle:'Deep verification', helpDeep:'A compatible Reacher-style server can perform server-side SMTP/provider checks. That is the mode that can produce Safe/Risky/Invalid/Unknown mailbox-level results.',
       helpPrivacyTitle:'Privacy', helpPrivacy:'Browser mode does not send the full address to a verification API. DNS lookups use only the domain. Deep mode sends the address to the verification service you configure.',
@@ -328,7 +333,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       enterEmail:'Enter an email address.', invalidEmail:'Please enter a valid email address.', configuringMode:'Switching mode…',
       remoteNeedsKey:'Deep verification needs a credential in Settings.', apiSuccess:'Connection successful.', apiFailed:'Connection failed.',
       historyOn:'History enabled.', historyOff:'History disabled.', historyCleared:'History cleared.', noHistory:'History is disabled.',
-      prepared:'List prepared.', tooMany:'Too many addresses. Please keep the list to 2,000 or fewer.', emptyList:'No email addresses were found.',
+      prepared:'List prepared.', tooMany:'Too many addresses. Please keep the list to 2,000 or fewer.', tooManyFileEmails:'The file contains more than 2,000 unique email addresses. Please split it into smaller files.', duplicatesRemoved:'Removed {count} duplicate address(es).', emptyList:'No email addresses were found.',
       bulkRunning:'Verifying…', bulkPaused:'Paused', bulkCanceled:'Canceled', finished:'Finished', duplicate:'Duplicate',
       fileLoaded:'File loaded.', fileReadFailed:'Could not read that file.', networkOffline:'Your browser is offline.', genericError:'Something went wrong. Please try again.',
       timeout:'The request timed out.', cors:'The browser could not access the configured service. Check its CORS settings.', unauthorized:'The service rejected the API key.', rateLimited:'The service is rate limiting requests. Please try again later.',
@@ -338,8 +343,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       bulkNotConfigured:'Configure a remote API credential in Settings first.', bulkRemoteLimit:'Remote bulk verification may be subject to the provider’s limits.',
       stopFirst:'Please stop the current verification first.', delete:'Delete', reopen:'Open', resume:'Resume', pending:'Pending', noSavedResults:'No saved results yet.',
       privacyBrowser:'Browser mode checks the address and its mail domain using HTTPS DNS lookups. It does not send the mailbox address to an email-verification server.', privacyRemote:'Deep mode sends the full address to the configured verification service. Browser mode uses only domain-level DNS lookups.',
-      bulkBrowserPrivacy:'Browser mode may send domain names to DNS-over-HTTPS providers; the full address stays in this browser.', bulkRemotePrivacy:'Deep mode sends each full address to the verification service you configured.',
-      catchAllNote:'Mailbox existence may be uncertain.', testServerReachable:'The server responded. Authentication will be validated when verification starts.', pasteUnavailable:'Paste is unavailable here. Use Ctrl+V instead.', onlineRestored:'Network connection restored.', invalidUrl:'Please enter a valid HTTPS API base URL.',
+      bulkBrowserPrivacy:'Browser mode may send domain names to DNS-over-HTTPS providers; the full address stays in this browser.', bulkRemotePrivacy:'Deep mode sends each full address to the verification service you configured.', remoteStopWaiting:'Stop waiting', remoteJobContinues:'The remote job will continue on the verification service; this page will stop waiting for its results.', noEmailsInXlsx:'No email addresses were found in the XLSX workbook.', noEmailsInCsv:'No email addresses were found in the CSV file.',
+      catchAllNote:'Mailbox existence may be uncertain.', testServerReachable:'The service responded. The exact verification endpoint will be checked when you verify an address.', testServerUnknown:'The server responded, but the URL may not be a Reacher API endpoint.', pasteUnavailable:'Paste is unavailable here. Use Ctrl+V instead.', onlineRestored:'Network connection restored.', invalidUrl:'Please enter a valid HTTPS API base URL.', verificationFailed:'Verification failed', bulkVerificationFailed:'Bulk verification failed', canceled:'Canceled.', fileTooLarge:'That file is too large. Please use a file no larger than 4 MB.', invalidApiPath:'The server responded, but this URL does not appear to be a Reacher API endpoint.', previous:'Previous', next:'Next', pageOf:'Page {page} of {pages}', disableHistory:'Disable history',
     },
     ar: {
       appTitle:'التحقق من البريد', appSubtitle:'تحقق يركز على الخصوصية', heroTitle:'تحقق من عنوان بريد إلكتروني',
@@ -348,7 +353,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       changeMode:'تغيير الوضع', emailLabel:'عنوان البريد الإلكتروني', verify:'تحقق', paste:'لصق', clear:'مسح',
       inputHint:'عنوان واحد في كل مرة. اضغط Enter للتحقق.', copySummary:'نسخ الملخص', viewTechnical:'التفاصيل التقنية',
       singleCheck:'فحص مفرد', bulkVerify:'فحص جماعي', history:'السجل', bulkTitle:'التحقق من عدة عناوين بريد',
-      bulkDesc:'ألصق عنوانًا في كل سطر أو ارفع ملف TXT/CSV. في وضع المتصفح تتم المعالجة داخله باستثناء استعلامات DNS.',
+      bulkDesc:'ألصق عنوانًا في كل سطر أو ارفع ملف TXT/CSV/XLSX. في وضع المتصفح تتم المعالجة داخله باستثناء استعلامات DNS.',
       uploadFile:'رفع ملف', prepareList:'تجهيز القائمة', startVerification:'بدء التحقق', bulkModeTitle:'وضع التحقق',
       bulkModeDesc:'استخدم فحص المتصفح افتراضيًا. الوضع المتقدم يستخدم خدمة التحقق التي تقوم بإعدادها.', browserMode:'فحص المتصفح',
       deepMode:'تحقق متقدم / عن بُعد', concurrency:'التوازي', bulkPrivacyTitle:'قبل البدء', pause:'إيقاف مؤقت', cancel:'إلغاء',
@@ -362,7 +367,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       privacySection:'الخصوصية', privacySectionDesc:'استخدم أقل قدر ممكن من المعالجة الخارجية.', saveHistory:'حفظ السجل المحلي',
       saveHistoryDesc:'حفظ النتائج الأخيرة في هذا المتصفح فقط.', requestGravatar:'طلب Gravatar في التحقق المتقدم',
       requestGravatarDesc:'إشارة اختيارية من مزود الخدمة. معطلة افتراضيًا.', dnsSection:'DNS', dnsSectionDesc:'يستخدم وضع المتصفح استعلامات DNS عبر HTTPS لفحص النطاق.',
-      interfaceSection:'الواجهة', language:'اللغة', theme:'المظهر', themeSystem:'النظام', themeLight:'فاتح', themeDark:'داكن', done:'تم',
+      interfaceSection:'الواجهة', language:'اللغة', theme:'المظهر', themeSystem:'النظام', themeLight:'فاتح', themeDark:'داكن', themeToggleToLight:'التبديل إلى المظهر الفاتح', themeToggleToDark:'التبديل إلى المظهر الداكن', done:'تم',
       helpTitle:'طريقة عمل الأداة', helpBrowserTitle:'فحص المتصفح', helpBrowser:'تتحقق الأداة من صيغة البريد، وتطبع النطاق، وتفحص مسارات البريد عبر DNS باستخدام HTTPS، وتتعرف على النطاقات المؤقتة وعناوين الأدوار الشائعة. لا يمكنها إثبات وجود صندوق البريد نفسه مباشرة من صفحة ويب ثابتة.',
       helpDeepTitle:'التحقق المتقدم', helpDeep:'يمكن لخادم متوافق مع Reacher إجراء فحوص SMTP ومزود الخدمة من جهة الخادم. وهذا هو الوضع الذي يستطيع إعطاء نتائج Safe/Risky/Invalid/Unknown على مستوى الصندوق.',
       helpPrivacyTitle:'الخصوصية', helpPrivacy:'وضع المتصفح لا يرسل عنوان البريد الكامل إلى خدمة تحقق. استعلامات DNS تستخدم النطاق فقط. الوضع المتقدم يرسل العنوان إلى الخدمة التي تقوم بإعدادها.',
@@ -381,7 +386,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       enterEmail:'أدخل عنوان بريد إلكتروني.', invalidEmail:'يرجى إدخال عنوان بريد صحيح.', configuringMode:'جاري تغيير الوضع…',
       remoteNeedsKey:'التحقق المتقدم يحتاج إلى بيانات اعتماد من الإعدادات.', apiSuccess:'تم الاتصال بنجاح.', apiFailed:'فشل الاتصال.',
       historyOn:'تم تفعيل السجل.', historyOff:'تم تعطيل السجل.', historyCleared:'تم مسح السجل.', noHistory:'السجل معطل.',
-      prepared:'تم تجهيز القائمة.', tooMany:'عدد كبير جدًا من العناوين. الحد 2,000 عنوان.', emptyList:'لم يتم العثور على عناوين بريد.',
+      prepared:'تم تجهيز القائمة.', tooMany:'عدد كبير جدًا من العناوين. الحد 2,000 عنوان.', tooManyFileEmails:'يحتوي الملف على أكثر من 2,000 عنوان بريد إلكتروني فريد. يرجى تقسيمه إلى ملفات أصغر.', duplicatesRemoved:'تم حذف {count} عنوان مكرر.', emptyList:'لم يتم العثور على عناوين بريد.',
       bulkRunning:'جارٍ التحقق…', bulkPaused:'متوقف مؤقتًا', bulkCanceled:'تم الإلغاء', finished:'اكتمل', duplicate:'مكرر',
       fileLoaded:'تم تحميل الملف.', fileReadFailed:'تعذر قراءة الملف.', networkOffline:'المتصفح غير متصل بالإنترنت.', genericError:'حدث خطأ. حاول مرة أخرى.',
       timeout:'انتهت مهلة الطلب.', cors:'تعذر على المتصفح الوصول إلى الخدمة. تحقق من إعدادات CORS.', unauthorized:'رفضت الخدمة مفتاح API.', rateLimited:'الخدمة تطبق حدًا على الطلبات. حاول لاحقًا.',
@@ -391,40 +396,91 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       bulkNotConfigured:'قم بإعداد بيانات اعتماد API من الإعدادات أولًا.', bulkRemoteLimit:'قد تخضع عمليات التحقق الجماعية لحدود المزود.',
       stopFirst:'أوقف التحقق الحالي أولًا.', delete:'حذف', reopen:'فتح', resume:'استئناف', pending:'قيد الانتظار', noSavedResults:'لا توجد نتائج محفوظة بعد.',
       privacyBrowser:'يفحص وضع المتصفح العنوان ونطاق البريد باستخدام DNS عبر HTTPS. ولا يرسل عنوان الصندوق إلى خدمة تحقق بالبريد.', privacyRemote:'الوضع المتقدم يرسل العنوان الكامل إلى خدمة التحقق المُعدة. أما وضع المتصفح فيستخدم استعلامات DNS للنطاق فقط.',
-      bulkBrowserPrivacy:'قد يرسل وضع المتصفح أسماء النطاقات إلى مزودي DNS عبر HTTPS؛ ويبقى عنوان البريد الكامل داخل المتصفح.', bulkRemotePrivacy:'يرسل الوضع المتقدم كل عنوان بريد كامل إلى خدمة التحقق التي قمت بإعدادها.',
-      catchAllNote:'قد تكون إمكانية تأكيد وجود الصندوق محدودة.', testServerReachable:'استجاب الخادم. سيتم التحقق من المصادقة عند بدء التحقق.', pasteUnavailable:'اللصق غير متاح هنا. استخدم Ctrl+V.', onlineRestored:'تم استعادة اتصال الشبكة.', invalidUrl:'يرجى إدخال عنوان HTTPS صحيح للخدمة.',
+      bulkBrowserPrivacy:'قد يرسل وضع المتصفح أسماء النطاقات إلى مزودي DNS عبر HTTPS؛ ويبقى عنوان البريد الكامل داخل المتصفح.', bulkRemotePrivacy:'يرسل الوضع المتقدم كل عنوان بريد كامل إلى خدمة التحقق التي قمت بإعدادها.', remoteStopWaiting:'إيقاف الانتظار', remoteJobContinues:'ستستمر مهمة التحقق عن بُعد لدى الخدمة، لكن هذه الصفحة ستتوقف عن انتظار نتائجها.', noEmailsInXlsx:'لم يتم العثور على عناوين بريد إلكتروني في ملف XLSX.', noEmailsInCsv:'لم يتم العثور على عناوين بريد إلكتروني في ملف CSV.',
+      catchAllNote:'قد تكون إمكانية تأكيد وجود الصندوق محدودة.', testServerReachable:'استجابت الخدمة. سيتم التحقق من مسار التحقق الصحيح عند بدء التحقق.', testServerUnknown:'استجاب الخادم، لكن قد لا يكون العنوان مسار Reacher API صحيحًا.', pasteUnavailable:'اللصق غير متاح هنا. استخدم Ctrl+V.', onlineRestored:'تم استعادة اتصال الشبكة.', invalidUrl:'يرجى إدخال عنوان HTTPS صحيح للخدمة.', verificationFailed:'فشل التحقق', bulkVerificationFailed:'فشل التحقق الجماعي', canceled:'تم الإلغاء.', fileTooLarge:'الملف كبير جدًا. استخدم ملفًا لا يتجاوز 4 ميجابايت.', invalidApiPath:'استجاب الخادم، لكن العنوان لا يبدو كمسار Reacher API صحيح.', previous:'السابق', next:'التالي', pageOf:'الصفحة {page} من {pages}', disableHistory:'تعطيل السجل',
     }
   };
 
   function t(key){ return (I18N[state.language] && I18N[state.language][key]) || I18N.en[key] || key; }
   function loadSettings(){ try { const raw=localStorage.getItem(STORAGE_KEY); return {...DEFAULT_SETTINGS,...(raw?JSON.parse(raw):{})}; } catch { return {...DEFAULT_SETTINGS}; } }
   function saveSettings(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify({...state.settings})); } catch {} }
-  function getApiKey(){ return $('apiKey').value.trim() || (sessionStorage.getItem(SESSION_KEY)||''); }
-  function setApiKey(value, remember){ try { if(remember && value) sessionStorage.setItem(SESSION_KEY,value); else if(!remember) sessionStorage.removeItem(SESSION_KEY); } catch {} }
   function getApiAuthMode(){ return state.settings.apiAuth==='selfhost'?'selfhost':'saas'; }
-  function getApiHeaders(includeJson=false){ const key=getApiKey(); const headers={}; if(includeJson) headers['content-type']='application/json'; if(getApiAuthMode()==='selfhost') headers['x-reacher-secret']=key; else headers['authorization']=key; return headers; }
+  function sessionKeyFor(mode=getApiAuthMode()){ return SESSION_KEYS[mode==='selfhost'?'selfhost':'saas']; }
+  function getStoredApiKey(mode=getApiAuthMode()){ try { return sessionStorage.getItem(sessionKeyFor(mode))||''; } catch { return ''; } }
+  function getApiKey(){ return $('apiKey').value.trim() || getStoredApiKey(); }
+  function setApiKey(value, remember, mode=getApiAuthMode()){ try { const key=sessionKeyFor(mode); if(remember && value) sessionStorage.setItem(key,value); else sessionStorage.removeItem(key); } catch {} }
+  function getApiHeaders(includeJson=false){ const key=getApiKey(); const headers={accept:'application/json'}; if(includeJson) headers['content-type']='application/json'; if(getApiAuthMode()==='selfhost') headers['x-reacher-secret']=key; else headers['authorization']=key; return headers; }
   function syncApiAuthUI(){ const mode=getApiAuthMode(); $('apiCredentialLabel').textContent=t(mode==='selfhost'?'sharedSecret':'apiKey'); $('apiKey').placeholder=mode==='selfhost'?t('sharedSecret'):t('apiKey'); $('apiAuthNote').textContent=t(mode==='selfhost'?'authSelfHostedNote':'authSaaSNote'); $('apiBaseNote').textContent=t('apiBaseNote'); }
   function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
   function formatTime(ts){ try { return new Intl.DateTimeFormat(state.language==='ar'?'ar-BH':'en-BH',{dateStyle:'medium',timeStyle:'short'}).format(new Date(ts)); } catch { return new Date(ts).toLocaleString(); } }
   function normalizeApiBase(v){
     let s=(v||'').trim(); if(!s) return '';
     if(!/^https?:\/\//i.test(s)) s='https://'+s;
-    try { const u=new URL(s); const host=u.hostname.toLowerCase(); const local=(host==='localhost'||host==='127.0.0.1'||host==='[::1]'); if(u.protocol!=='https:' && !local) return ''; u.hash=''; u.search=''; let path=u.pathname.replace(/\/v1\/?$/i,'').replace(/\/$/,''); u.pathname=path||'/'; return u.toString().replace(/\/$/,''); } catch { return ''; }
+    try {
+      const u=new URL(s); const host=u.hostname.toLowerCase();
+      const local=(host==='localhost'||host==='127.0.0.1'||host==='[::1]');
+      if(u.protocol!=='https:' && !local) return '';
+      if(u.username||u.password) return '';
+      u.hash=''; u.search='';
+      let path=u.pathname.replace(/\/v1\/check_email\/?$/i,'').replace(/\/v1\/bulk(?:\/.*)?\/?$/i,'').replace(/\/v1\/?$/i,'').replace(/\/$/,'');
+      u.pathname=path||'/';
+      return u.toString().replace(/\/$/,'');
+    } catch { return ''; }
   }
   function showToast(title, message='', type=''){ const el=document.createElement('div'); el.className='toast '+type; const strong=document.createElement('strong'); strong.textContent=title; el.appendChild(strong); if(message){const p=document.createElement('div');p.textContent=message;el.appendChild(p);} $('toastStack').appendChild(el); setTimeout(()=>el.remove(),4500); }
-  function setTheme(theme){
-    state.theme=theme; state.settings.theme=theme; saveSettings();
+  function resolvedTheme(theme){
+    if(theme==='dark'||theme==='light') return theme;
     const systemDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const applied=theme==='system'?(systemDark?'dark':'light'):theme;
-    document.documentElement.dataset.theme=applied;
+    return systemDark?'dark':'light';
+  }
+  function updateThemeButton(){
+    const applied=document.documentElement.dataset.theme||resolvedTheme(state.theme);
+    const dark=applied==='dark';
+    $('themeBtn').textContent=dark?'☀':'☾';
+    $('themeBtn').setAttribute('aria-label',dark?t('themeToggleToLight'):t('themeToggleToDark'));
+    $('themeBtn').title=dark?t('themeToggleToLight'):t('themeToggleToDark');
+  }
+  function setTheme(theme){
+    theme=(theme==='dark'||theme==='light')?theme:'system';
+    state.theme=theme; state.settings.theme=theme; saveSettings();
+    document.documentElement.dataset.theme=resolvedTheme(theme);
     $('themeSelect').value=theme;
+    updateThemeButton();
+  }
+  function toggleTheme(){
+    const applied=document.documentElement.dataset.theme||resolvedTheme(state.theme);
+    setTheme(applied==='dark'?'light':'dark');
+  }
+  function relocalizeResult(result){
+    if(!result) return;
+    if(result.mode==='remote'){
+      const reachable=['safe','risky','invalid','unknown'].includes(result.status)?result.status:'unknown';
+      result.source=t('deepSource');
+      result.explanation=t('remote'+reachable[0].toUpperCase()+reachable.slice(1));
+      const raw=result.raw||{}, notes=[];
+      for(const name of ['syntax','mx','smtp','misc']){ const err=extractCoreError(raw?.[name]); if(err) notes.push(name.toUpperCase()+': '+err.message); }
+      if(raw?.smtp?.is_catch_all===true) notes.push(t('catchAllNote'));
+      result.notes=notes;
+    } else {
+      result.source=t('browserAssessment');
+      const status=['safe','risky','invalid','unknown'].includes(result.status)?result.status:'unknown';
+      result.explanation=t('browser'+status[0].toUpperCase()+status.slice(1));
+      const raw=result.raw||{}, dns=raw.dns||{}, signals=raw.signals||{}, notes=[];
+      if(status==='invalid' && dns.domainExists===false) notes.push(t('domainMissing'));
+      if(status==='unknown' && dns.route==='none') notes.push(t('noRoute'));
+      if(signals.isDisposable) notes.push(t('disposableNote'));
+      if(signals.isRole) notes.push(t('roleNote'));
+      if(dns.route==='fallback') notes.push(t('noMxButA'));
+      if(result.domain?.suggestion) notes.push(t('suggestionLabel')+': '+result.domain.suggestion);
+      result.notes=notes;
+    }
   }
   function setLanguage(lang){
     state.language=lang==='ar'?'ar':'en'; state.settings.language=state.language; document.documentElement.lang=state.language; document.documentElement.dir=state.language==='ar'?'rtl':'ltr'; saveSettings();
     document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n; if(I18N[state.language][key]) el.textContent=t(key);});
-    $('languageBtn').textContent=state.language==='ar'?'EN':'ع';
+    $('languageBtn').textContent=state.language==='ar'?'EN':'ع'; $('languageBtn').setAttribute('aria-label',state.language==='ar'?'Switch to English':'التبديل إلى العربية'); $('settingsBtn').setAttribute('aria-label',state.language==='ar'?'الإعدادات':'Settings'); $('helpBtn').setAttribute('aria-label',state.language==='ar'?'المساعدة':'Help'); document.querySelectorAll('.close-modal').forEach(b=>b.setAttribute('aria-label',t('close')));
     $('languageSelect').value=state.language;
-    updateModeUI(); renderHistory(); updateBulkPrivacy();
+    updateModeUI(); renderHistory(); updateBulkPrivacy(); updateThemeButton(); if(state.currentResult){ relocalizeResult(state.currentResult); renderResult(state.currentResult); } if(state.bulkResults?.length){ state.bulkResults.forEach(relocalizeResult); } renderBulkTable();
   }
   function statusLabel(status){ return t(status); }
   function modeLabel(mode){ return mode==='remote'?t('modeRemote'):t('modeBrowser'); }
@@ -436,19 +492,24 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     if(value.length>320){result.reason='too_long';return result;}
     if(/[\u0000-\u001f\u007f]/u.test(value)){result.reason='whitespace_or_control';return result;}
     const at=value.lastIndexOf('@');
-    if(at<1 || at===value.length-1 || value.indexOf('@')!==at && !value.startsWith('"')){result.reason='missing_or_multiple_at';return result;}
+    if(at<1 || at===value.length-1 || (value.indexOf('@')!==at && !value.startsWith('"'))){result.reason='missing_or_multiple_at';return result;}
     const local=value.slice(0,at), domain=value.slice(at+1);
     if(utf8len(local)>64){result.reason='local_too_long';return result;}
     if(!domain || domain.length>255){result.reason='domain_too_long';return result;}
     if(local.startsWith('"') || local.endsWith('"')){
       if(!(local.startsWith('"')&&local.endsWith('"'))){result.reason='bad_quoted_local';return result;}
-      for(let i=1;i<local.length-1;i++){const c=local[i]; if(c==='\\'){i++; continue;} if(/[\r\n\u0000-\u001f\u007f]/.test(c)){result.reason='bad_quoted_local';return result;}}
+      for(let i=1;i<local.length-1;i++){
+        const c=local[i];
+        if(c==='\\'){ if(i>=local.length-2){result.reason='bad_quoted_local';return result;} i++; continue; }
+        if(c==='"'||/[\r\n\u0000-\u001f\u007f]/.test(c)){result.reason='bad_quoted_local';return result;}
+      }
     } else {
       if(/\s/.test(local)){result.reason='bad_local_chars';return result;}
       if(local.startsWith('.')||local.endsWith('.')||local.includes('..')){result.reason='bad_local_dots';return result;}
       if(/[()<>\[\]:;,@\\"\s]/.test(local)){result.reason='bad_local_chars';return result;}
     }
     try {
+      if(/[\s\u0000-\u001f\u007f\/\\?:#@\[\]]/.test(domain)){result.reason='bad_domain';return result;}
       const asciiDomain=new URL('http://'+domain).hostname.toLowerCase().replace(/\.$/,'');
       if(!asciiDomain || asciiDomain.length>253){result.reason='bad_domain';return result;}
       const labels=asciiDomain.split('.');
@@ -475,15 +536,16 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     for(let i=0;i<endpoints.length;i++){
       try{
         const r=await fetchJson(endpoints[i],{headers:{accept:'application/dns-json'}},8500,signal);
-        if(r.data && typeof r.data==='object') { if([2,5].includes(r.data.Status) && i<endpoints.length-1) { lastErr=Object.assign(new Error('DNS_RETRY'),{code:'DNS_RETRY'}); continue; } return {...r.data, provider:i===0?'Cloudflare':'Google'}; }
-        lastErr=new Error('NO_DNS');
+        if(!r.ok){ lastErr=Object.assign(new Error('DNS_HTTP_'+r.status),{code:'DNS_HTTP',status:r.status}); continue; }
+        if(r.data && typeof r.data==='object') { if([2,3,5].includes(r.data.Status) && i<endpoints.length-1) { lastErr=Object.assign(new Error('DNS_RETRY'),{code:'DNS_RETRY'}); continue; } return {...r.data, provider:i===0?'Cloudflare':'Google'}; }
+        lastErr=Object.assign(new Error('NO_DNS'),{code:'NO_DNS'});
       }catch(e){lastErr=e;}
     }
     throw lastErr || Object.assign(new Error('NO_DNS'),{code:'NO_DNS'});
   }
   function dnsStatusText(status){ return ({0:'NOERROR',1:'FORMERR',2:'SERVFAIL',3:'NXDOMAIN',4:'NOTIMP',5:'REFUSED'})[status] || 'DNS '+status; }
   async function resolveDomain(domain,signal=null){
-    const cached=state.dnsCache.get(domain); if(cached && Date.now()-cached.ts<300000) return cached.value;
+    const cached=state.dnsCache.get(domain); if(cached && Date.now()-cached.ts<(cached.cacheMs||300000)) return cached.value;
     const [mx,a,aaaa]=await Promise.allSettled([dohQuery(domain,'MX',signal),dohQuery(domain,'A',signal),dohQuery(domain,'AAAA',signal)]);
     const pick=(r)=>r.status==='fulfilled'?r.value:null;
     const errors=[]; [mx,a,aaaa].forEach(r=>{if(r.status==='rejected') errors.push(r.reason?.code||r.reason?.message||'DNS error');});
@@ -496,7 +558,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     const hasFallback=aRecords.length>0 || aaaaRecords.length>0;
     const domainExists=hasMx || hasFallback || !allNx;
     let route='none'; if(hasMx) route='mx'; else if(hasFallback) route='fallback';
-    const value={provider:mxData?.provider||aData?.provider||aaaaData?.provider||'DNS', status:mxData?.Status ?? null, statusText:mxData?dnsStatusText(mxData.Status):'', mxRecords,aRecords,aaaaRecords,hasMx,hasFallback,domainExists,route,mxNx,errors}; state.dnsCache.set(domain,{ts:Date.now(),value}); if(state.dnsCache.size>500){const first=state.dnsCache.keys().next().value;state.dnsCache.delete(first);} return value;
+    const value={provider:mxData?.provider||aData?.provider||aaaaData?.provider||'DNS', status:mxData?.Status ?? null, statusText:mxData?dnsStatusText(mxData.Status):'', mxRecords,aRecords,aaaaRecords,hasMx,hasFallback,domainExists,route,mxNx,errors}; const cacheMs=(mxData||aData||aaaaData)?300000:30000; state.dnsCache.set(domain,{ts:Date.now(),value,cacheMs}); if(state.dnsCache.size>500){const first=state.dnsCache.keys().next().value;state.dnsCache.delete(first);} return value;
   }
   function checkLocalSignals(parsed){
     const local=parsed.local.toLowerCase(); const domain=parsed.asciiDomain.toLowerCase();
@@ -584,7 +646,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     $('resultSource').textContent=result.source+' · '+formatTime(Date.now());
     $('singleProgress').classList.add('hidden');
   }
-  function updateProgress(label,percent){ $('singleProgress').classList.remove('hidden');$('progressLabel').textContent=label;$('progressPercent').textContent=percent+'%';$('progressFill').style.width=percent+'%';$('cancelSingleBtn').disabled=!state.abort; }
+  function updateProgress(label,percent){ $('singleProgress').classList.remove('hidden');$('progressLabel').textContent=label;$('progressPercent').textContent=percent+'%';$('progressFill').style.width=percent+'%';$('progressFill').parentElement.setAttribute('aria-valuenow',String(percent));$('cancelSingleBtn').disabled=!state.abort; }
 
   async function verifyBrowser(raw, signal){
     const parsed=validateEmailSyntax(raw); updateProgress(t('syntax'),18); if(!parsed.valid) return browserResult(parsed,{domainExists:false,route:'none',hasMx:false,mxRecords:[],provider:'DNS',hasFallback:false},checkLocalSignals(parsed));
@@ -599,17 +661,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     const payload={to_email:email,check_gravatar:!!state.settings.gravatar};
     const url=base.replace(/\/$/,'')+'/v1/check_email';
     updateProgress(t('remote'),28);
-    const controller=new AbortController(); const onAbort=()=>controller.abort(); signal?.addEventListener('abort',onAbort,{once:true});
-    let r; try { r=await fetch(url,{method:'POST',headers:getApiHeaders(true),body:JSON.stringify(payload),signal:controller.signal,cache:'no-store'}); } catch(err){ if(err.name==='AbortError') throw err; throw Object.assign(new Error('NETWORK'),{code:'NETWORK',cause:err}); } finally {signal?.removeEventListener('abort',onAbort);}
-    const text=await r.text(); let data=null; try{data=text?JSON.parse(text):null;}catch{}
+    let r; try { r=await fetchJson(url,{method:'POST',headers:getApiHeaders(true),body:JSON.stringify(payload)},90000,signal); } catch(err){ if(err.name==='AbortError') throw err; throw Object.assign(new Error('NETWORK'),{code:'NETWORK',cause:err}); }
     updateProgress(t('processing'),78);
-    if(!r.ok){ let code='SERVER'; if(r.status===401||r.status===403)code='AUTH'; else if(r.status===429)code='RATE'; else if(r.status>=500)code='SERVER'; throw Object.assign(new Error(text||('HTTP '+r.status)),{code,status:r.status,body:data}); }
-    if(!data || typeof data!=='object') throw Object.assign(new Error('BAD_RESPONSE'),{code:'BAD_RESPONSE'});
-    updateProgress(t('complete'),100); return normalizeRemoteResult(data,email);
+    if(!r.ok){ let code='SERVER'; if(r.status===401||r.status===403)code='AUTH'; else if(r.status===429)code='RATE'; else if(r.status>=500)code='SERVER'; throw Object.assign(new Error(r.text||('HTTP '+r.status)),{code,status:r.status,body:r.data}); }
+    if(!r.data || typeof r.data!=='object') throw Object.assign(new Error('BAD_RESPONSE'),{code:'BAD_RESPONSE'});
+    updateProgress(t('complete'),100); return normalizeRemoteResult(r.data,email);
   }
 
   function friendlyError(err){
-    const c=err?.code; if(c==='API_KEY') return t('remoteNeedsKey'); if(c==='TIMEOUT') return t('timeout'); if(c==='AUTH') return t('unauthorized'); if(c==='RATE') return t('rateLimited'); if(c==='SERVER') return t('serverError'); if(c==='BAD_RESPONSE') return t('malformedResponse'); if(c==='NETWORK') return t('cors'); if(c==='BAD_BASE') return 'Please enter a valid HTTPS API base URL.'; if(c==='NO_DNS') return t('noDns'); if(err?.name==='AbortError') return 'Canceled.'; return err?.message||t('genericError');
+    const c=err?.code; if(c==='TOO_MANY_FILE_EMAILS') return t('tooManyFileEmails'); if(c==='NO_EMAILS_IN_FILE') return err?.message||t('emptyList'); if(c==='API_KEY') return t('remoteNeedsKey'); if(c==='TIMEOUT') return t('timeout'); if(c==='AUTH') return t('unauthorized'); if(c==='RATE') return t('rateLimited'); if(c==='SERVER') return t('serverError'); if(c==='BAD_RESPONSE') return t('malformedResponse'); if(c==='NETWORK') return t('cors'); if(c==='BAD_BASE') return t('invalidUrl'); if(c==='NO_DNS') return t('noDns'); if(err?.name==='AbortError') return t('canceled'); return err?.message||t('genericError');
   }
   async function verifySingle(){
     if(state.abort){ showToast(t('stopFirst')); return; }
@@ -617,7 +677,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     if(!navigator.onLine){showToast(t('networkOffline'),'','error');return;}
     state.abort=new AbortController(); $('verifyBtn').disabled=true; $('modeSwitchBtn').disabled=true; $('resultCard').classList.add('hidden');
     try { const result=state.currentMode==='remote'?await remoteVerify(email,state.abort.signal):await verifyBrowser(email,state.abort.signal); renderResult(result); saveHistoryIfEnabled(result); }
-    catch(err){ if(err.name==='AbortError'){showToast(t('bulkCanceled'));} else {showToast('Verification failed',friendlyError(err),'error');} $('singleProgress').classList.add('hidden'); }
+    catch(err){ if(err.name==='AbortError'){showToast(t('canceled'));} else {showToast(t('verificationFailed'),friendlyError(err),'error');} $('singleProgress').classList.add('hidden'); }
     finally{ state.abort=null; $('verifyBtn').disabled=false; $('modeSwitchBtn').disabled=false; $('cancelSingleBtn').disabled=true; }
   }
 
@@ -637,46 +697,154 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     for(const raw of parts){ const parsed=validateEmailSyntax(raw); const key=parsed.valid?parsed.normalized.toLowerCase():raw.toLowerCase(); if(seen.has(key)){duplicates++;continue;} seen.add(key); out.push({input:raw,parsed}); if(out.length>=MAX_BULK) break; }
     return {items:out,duplicates,total:parts.length};
   }
+  function parseCsvRows(text){
+    const rows=[]; let row=[], cell='', quoted=false;
+    for(let i=0;i<text.length;i++){ const ch=text[i]; if(quoted){ if(ch==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else quoted=false; } else cell+=ch; continue; } if(ch==='"'){quoted=true;continue;} if(ch===','){row.push(cell);cell='';continue;} if(ch==='\n'){row.push(cell);rows.push(row);row=[];cell='';continue;} if(ch==='\r'){if(text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';continue;} cell+=ch; } row.push(cell); if(row.length>1||row[0]!=='' )rows.push(row); return rows;
+  }
+  function extractEmailsFromCsv(text){
+    const rows=parseCsvRows(text); if(!rows.length)return {emails:[],column:-1,exceeded:false};
+    const header=rows[0].map(v=>String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,' '));
+    const column=header.findIndex(v=>/^(e mail|email address|email|mail address|mail)$/.test(v));
+    const values=[]; const seen=new Set(); let exceeded=false;
+    const sourceRows=column>=0?rows.slice(1):rows;
+    for(const row of sourceRows){
+      const cells=column>=0?[row[column]||'']:row;
+      for(const cell of cells){
+        const matches=String(cell||'').match(/[^\s,;<>"']+@[^\s,;<>"']+\.[^\s,;<>"']+/gu);
+        if(!matches) continue;
+        for(const match of matches){
+          const email=match.trim(); const key=email.toLowerCase(); if(seen.has(key)) continue; seen.add(key);
+          if(values.length>=MAX_BULK){exceeded=true;break;}
+          values.push(email);
+        }
+        if(exceeded) break;
+      }
+      if(exceeded) break;
+    }
+    return {emails:values,column,exceeded};
+  }
+  function columnIndexFromRef(ref){
+    const m=String(ref||'').match(/^([A-Z]+)\d+$/i); if(!m)return -1; let n=0;
+    for(const ch of m[1].toUpperCase()) n=n*26+(ch.charCodeAt(0)-64);
+    return n-1;
+  }
+  function xlsxEmailMatch(value){
+    const text=String(value??'').trim(); if(!text)return [];
+    const matches=text.match(/[^\s,;<>"']+@[^\s,;<>"']+\.[^\s,;<>"']+/gu);
+    return matches?matches.map(v=>v.trim()):[];
+  }
+  async function inflateZipEntry(bytes){
+    if(typeof DecompressionStream!=='function') throw new Error('This browser cannot decompress XLSX files. Please use a current browser or save the spreadsheet as CSV.');
+    const ds=new DecompressionStream('deflate-raw');
+    const stream=new Blob([bytes]).stream().pipeThrough(ds);
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  async function readZipEntries(buffer){
+    const bytes=new Uint8Array(buffer),view=new DataView(buffer); let eocd=-1;
+    const start=Math.max(0,bytes.length-22-0xffff);
+    for(let i=bytes.length-22;i>=start;i--){if(view.getUint32(i,true)===0x06054b50){eocd=i;break;}}
+    if(eocd<0)throw new Error('The XLSX file is not a valid workbook package.');
+    const count=view.getUint16(eocd+10,true),offset=view.getUint32(eocd+16,true); const entries=new Map(); let pos=offset; let totalUncompressed=0;
+    for(let i=0;i<count;i++){
+      if(view.getUint32(pos,true)!==0x02014b50)throw new Error('The XLSX file has an invalid ZIP directory.');
+      const method=view.getUint16(pos+10,true),compressed=view.getUint32(pos+20,true),uncompressed=view.getUint32(pos+24,true);
+      const nameLen=view.getUint16(pos+28,true),extraLen=view.getUint16(pos+30,true),commentLen=view.getUint16(pos+32,true),local=view.getUint32(pos+42,true);
+      const name=new TextDecoder().decode(bytes.slice(pos+46,pos+46+nameLen)); pos+=46+nameLen+extraLen+commentLen;
+      if(name.endsWith('/'))continue;
+      totalUncompressed += uncompressed;
+      if(compressed>MAX_FILE_BYTES*2||uncompressed>MAX_FILE_BYTES*8||totalUncompressed>MAX_XLSX_UNCOMPRESSED_BYTES)throw new Error('The XLSX workbook is too large to process safely in the browser.');
+      if(local>bytes.length-30 || view.getUint32(local,true)!==0x04034b50)throw new Error('The XLSX file has an invalid ZIP entry.');
+      const localNameLen=view.getUint16(local+26,true),localExtraLen=view.getUint16(local+28,true),dataStart=local+30+localNameLen+localExtraLen;
+      if(dataStart<0 || dataStart>bytes.length || compressed>bytes.length-dataStart)throw new Error('The XLSX file contains a truncated ZIP entry.');
+      const raw=bytes.slice(dataStart,dataStart+compressed); let data;
+      if(method===0)data=raw; else if(method===8)data=await inflateZipEntry(raw); else throw new Error('This XLSX file uses an unsupported compression method.');
+      entries.set(name,data);
+    }
+    return entries;
+  }
+  function xmlText(node){return Array.from(node?.getElementsByTagName?.('t')||[]).map(n=>n.textContent||'').join('');}
+  function xlsxCellValue(cell,shared){
+    const type=cell.getAttribute('t')||'';
+    if(type==='inlineStr')return xmlText(cell.querySelector('is'));
+    const v=cell.querySelector('v'); if(!v)return '';
+    const raw=v.textContent||''; if(type==='s'){const idx=Number(raw);return Number.isInteger(idx)&&shared[idx]!=null?shared[idx]:'';}
+    if(type==='b')return raw==='1'?'TRUE':'FALSE'; return raw;
+  }
+  async function parseXlsxCells(buffer){
+    const entries=await readZipEntries(buffer),decoder=new TextDecoder('utf-8'),shared=[];
+    const sharedBytes=entries.get('xl/sharedStrings.xml');
+    if(sharedBytes){const doc=new DOMParser().parseFromString(decoder.decode(sharedBytes),'application/xml');if(doc.getElementsByTagName('parsererror').length)throw new Error('The XLSX shared-strings section is invalid.');for(const si of Array.from(doc.getElementsByTagName('si')))shared.push(xmlText(si));}
+    const sheets=Array.from(entries.keys()).filter(k=>/^xl\/worksheets\/sheet\d+\.xml$/i.test(k)).sort((a,b)=>Number(a.match(/sheet(\d+)/i)[1])-Number(b.match(/sheet(\d+)/i)[1]));
+    if(!sheets.length)throw new Error('The XLSX workbook does not contain a readable worksheet.');
+    const cells=[];
+    for(const name of sheets){
+      const doc=new DOMParser().parseFromString(decoder.decode(entries.get(name)),'application/xml'); if(doc.getElementsByTagName('parsererror').length)continue;
+      for(const cell of Array.from(doc.getElementsByTagName('c'))){
+        const ref=cell.getAttribute('r')||''; const row=Number((ref.match(/\d+$/)||['0'])[0]); const col=columnIndexFromRef(ref); const value=xlsxCellValue(cell,shared);
+        if(row>0&&value!=='')cells.push({row,col,value}); if(cells.length>=50000)break;
+      }
+      if(cells.length>=50000)break;
+    }
+    return cells;
+  }
+  async function extractEmailsFromXlsx(buffer){
+    const cells=await parseXlsxCells(buffer); if(!cells.length)return {emails:[],column:-1,exceeded:false};
+    const preferred=new Set();
+    for(const cell of cells){if(cell.row>20)continue;const header=String(cell.value||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,' ');if(/^(e mail|email address|email|mail address|mail)$/.test(header))preferred.add(cell.col);}
+    const values=[]; const seen=new Set(); let exceeded=false;
+    const collect=(cell)=>{for(const match of xlsxEmailMatch(cell.value)){const email=match.trim();const key=email.toLowerCase();if(seen.has(key))continue;seen.add(key);if(values.length>=MAX_BULK){exceeded=true;return;}values.push(email);}};
+    for(const cell of cells){if(preferred.size&&!preferred.has(cell.col))continue;collect(cell);if(exceeded)break;}
+    if(!values.length&&preferred.size){for(const cell of cells){collect(cell);if(exceeded)break;}}
+    return {emails:values,column:preferred.size?Array.from(preferred)[0]:-1,exceeded};
+  }
   function renderBulkSummary(extra={}){
     const r=state.bulkResults; const counts={safe:r.filter(x=>x.status==='safe').length,risky:r.filter(x=>x.status==='risky').length,invalid:r.filter(x=>x.status==='invalid').length,unknown:r.filter(x=>x.status==='unknown').length,pending:state.bulkItems.length-r.length};
     const items=[['safe',t('safe'),counts.safe],['risky',t('risky'),counts.risky],['invalid',t('invalid'),counts.invalid],['unknown',t('unknown'),counts.unknown],['pending',t('pending'),counts.pending]];
     const el=$('bulkSummary');el.replaceChildren(); items.forEach(([_,label,value])=>{const d=document.createElement('div');d.className='sum';const s=document.createElement('strong');s.textContent=value;const sp=document.createElement('span');sp.textContent=label;d.append(s,sp);el.appendChild(d);});
   }
+  function updateBulkPager(){
+    const total=state.bulkResults.length; const pages=Math.max(1,Math.ceil(total/BULK_PAGE_SIZE)); state.bulkPage=clamp(state.bulkPage,1,pages); const pager=$('bulkPager'); if(!total||pages<=1){pager.classList.add('hidden');return;} pager.classList.remove('hidden'); $('bulkPageInfo').textContent=t('pageOf').replace('{page}',state.bulkPage).replace('{pages}',pages); $('bulkPrevBtn').disabled=state.bulkPage<=1; $('bulkNextBtn').disabled=state.bulkPage>=pages;
+  }
   function renderBulkTable(){
-    const body=$('bulkTbody');body.replaceChildren(); if(!state.bulkResults.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;const div=document.createElement('div');div.className='empty';div.textContent=t('noBulkResults');td.appendChild(div);tr.appendChild(td);body.appendChild(tr);return;}
-    state.bulkResults.forEach(r=>{const tr=document.createElement('tr'); const cells=[r.normalized||r.input, r.status, r.syntax.domain||'', r.mx.available? t('yes'):t('no'), r.disposable===true?t('yes'):r.disposable===false?t('no'):'—', r.role===true?t('yes'):r.role===false?t('no'):'—', (r.notes&&r.notes.join(' · '))||r.explanation||''];
-      cells.forEach((v,i)=>{const td=document.createElement('td'); if(i===1){const p=document.createElement('span');p.className='pill '+r.status;p.textContent=statusLabel(r.status);td.appendChild(p);}else{td.textContent=v;} if(i===0)td.classList.add('ellipsis'); tr.appendChild(td);}); body.appendChild(tr); });
+    const body=$('bulkTbody');body.replaceChildren(); if(!state.bulkResults.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=7;const div=document.createElement('div');div.className='empty';div.textContent=t('noBulkResults');td.appendChild(div);tr.appendChild(td);body.appendChild(tr);updateBulkPager();return;}
+    const start=(state.bulkPage-1)*BULK_PAGE_SIZE; const visible=state.bulkResults.slice(start,start+BULK_PAGE_SIZE);
+    visible.forEach(r=>{const tr=document.createElement('tr'); const cells=[r.normalized||r.input, r.status, r.syntax.domain||'', r.mx.available===true?t('yes'):r.mx.available===false?t('no'):'—', r.disposable===true?t('yes'):r.disposable===false?t('no'):'—', r.role===true?t('yes'):r.role===false?t('no'):'—', (r.notes&&r.notes.join(' · '))||r.explanation||''];
+      cells.forEach((v,i)=>{const td=document.createElement('td'); if(i===1){const p=document.createElement('span');p.className='pill '+r.status;p.textContent=statusLabel(r.status);td.appendChild(p);}else{td.textContent=v;} if(i===0)td.classList.add('ellipsis'); tr.appendChild(td);}); body.appendChild(tr); }); updateBulkPager();
   }
   function updateBulkProgress(done,total,label){const pct=total?Math.round(done/total*100):0;$('bulkProgressLabel').textContent=label||`${done} / ${total}`;$('bulkProgressPercent').textContent=pct+'%';$('bulkProgressFill').style.width=pct+'%';renderBulkSummary();}
-  function prepareBulk(){ const parsed=parseEmails($('bulkInput').value); if(parsed.total>MAX_BULK){showToast(t('tooMany'),'','error');return;} if(!parsed.items.length){showToast(t('emptyList'),'','error');return;} state.bulkItems=parsed.items; state.bulkResults=[]; state.bulkPaused=false; $('bulkProgressArea').classList.remove('hidden'); renderBulkSummary(); renderBulkTable(); updateBulkProgress(0,state.bulkItems.length); showToast(t('prepared'),parsed.duplicates?`${parsed.duplicates} duplicates removed.`:'','success'); }
+  function prepareBulk(){ const input=$('bulkInput').value; if(input.length>MAX_BULK_INPUT_CHARS){showToast(t('tooMany'),t('fileTooLarge'),'error');return;} const parsed=parseEmails(input); if(parsed.total>MAX_BULK){showToast(t('tooMany'),'','error');return;} if(!parsed.items.length){showToast(t('emptyList'),'','error');return;} state.bulkItems=parsed.items; state.bulkResults=[]; state.bulkPage=1; state.bulkPaused=false; $('bulkProgressArea').classList.remove('hidden'); renderBulkSummary(); renderBulkTable(); updateBulkProgress(0,state.bulkItems.length); updateBulkControls(); showToast(t('prepared'),parsed.duplicates?t('duplicatesRemoved').replace('{count}',String(parsed.duplicates)):'','success'); }
   function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
   async function processBulkBrowser(){
-    const total=state.bulkItems.length; let cursor=0; const results=new Array(total); const worker=async()=>{while(true){if(state.bulkAbort?.aborted) return; while(state.bulkPaused){await sleep(180);if(state.bulkAbort?.aborted)return;} const idx=cursor++; if(idx>=total)return; const item=state.bulkItems[idx]; let result; try{result=await verifyBrowser(item.input,state.bulkAbort.signal);}catch(err){ result={input:item.input,normalized:item.input,status:'unknown',confidence:'limitedConfidence',mode:'browser',source:t('browserAssessment'),explanation:friendlyError(err),syntax:{valid:item.parsed.valid,local:item.parsed.local,domain:item.parsed.domain},domain:{exists:null,route:'none',suggestion:''},mx:{available:null,records:[],provider:'DNS'},smtp:{checked:false},disposable:null,role:null,provider:'unknown',notes:[friendlyError(err)],raw:{error:String(err)}}; } results[idx]=result; state.bulkResults=results.filter(Boolean); renderBulkTable(); updateBulkProgress(state.bulkResults.length,total,state.bulkPaused?t('bulkPaused'):t('bulkRunning')); } };
+    const total=state.bulkItems.length; let cursor=0; let renderedCount=0; const results=new Array(total); const worker=async()=>{while(true){if(state.bulkAbort?.aborted) return; while(state.bulkPaused){await sleep(180);if(state.bulkAbort?.aborted)return;} const idx=cursor++; if(idx>=total)return; const item=state.bulkItems[idx]; let result; try{result=await verifyBrowser(item.input,state.bulkAbort.signal);}catch(err){ result={input:item.input,normalized:item.input,status:'unknown',confidence:'limitedConfidence',mode:'browser',source:t('browserAssessment'),explanation:friendlyError(err),syntax:{valid:item.parsed.valid,local:item.parsed.local,domain:item.parsed.domain},domain:{exists:null,route:'none',suggestion:''},mx:{available:null,records:[],provider:'DNS'},smtp:{checked:false},disposable:null,role:null,provider:'unknown',notes:[friendlyError(err)],raw:{error:String(err)}}; } results[idx]=result; state.bulkResults=results.filter(Boolean); if(state.bulkResults.length-renderedCount>=5 || state.bulkResults.length===total){renderedCount=state.bulkResults.length;renderBulkTable();} updateBulkProgress(state.bulkResults.length,total,state.bulkPaused?t('bulkPaused'):t('bulkRunning')); } };
     const workers=Array.from({length:clamp(Number($('bulkConcurrency').value)||4,1,8)},worker); await Promise.all(workers); return results;
   }
   async function remoteBulkJob(){
     const key=getApiKey(); if(!key) throw Object.assign(new Error('API_KEY'),{code:'API_KEY'}); const base=normalizeApiBase(state.settings.apiBase); if(!base) throw Object.assign(new Error('BAD_BASE'),{code:'BAD_BASE'});
     const emails=state.bulkItems.map(x=>x.parsed.valid?x.parsed.normalized:x.input); const url=base+'/v1/bulk';
     const r=await fetchJson(url,{method:'POST',headers:getApiHeaders(true),body:JSON.stringify({input:emails})},25000,state.bulkAbort?.signal||null); if(!r.ok){if(r.status===401||r.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'});if(r.status===429)throw Object.assign(new Error('RATE'),{code:'RATE'});throw Object.assign(new Error('SERVER'),{code:'SERVER'});} const jobId=r.data?.job_id; if(jobId==null)throw Object.assign(new Error('BAD_RESPONSE'),{code:'BAD_RESPONSE'});
-    const statusUrl=base+'/v1/bulk/'+encodeURIComponent(jobId); const resultsUrl=base+'/v1/bulk/'+encodeURIComponent(jobId)+'/results'; let statusData=null;
-    for(let i=0;i<240;i++){if(state.bulkAbort?.aborted)throw new DOMException('Aborted','AbortError'); while(state.bulkPaused){await sleep(200);if(state.bulkAbort?.aborted)throw new DOMException('Aborted','AbortError');} const sr=await fetchJson(statusUrl,{headers:getApiHeaders(false)},15000,state.bulkAbort?.signal||null); if(!sr.ok){if(sr.status===401||sr.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'});throw Object.assign(new Error('SERVER'),{code:'SERVER'});} statusData=sr.data||{}; const total=Number(statusData.total||state.bulkItems.length); const done=Number(statusData.completed||statusData.processed||statusData.finished||0); updateBulkProgress(Math.min(done,total),total,statusData.job_status||t('bulkRunning')); if(statusData.job_status==='Completed'||String(statusData.status).toLowerCase()==='completed')break; await sleep(1200); }
-    const rr=await fetchJson(resultsUrl,{headers:{authorization:key}},30000,state.bulkAbort?.signal||null); if(!rr.ok)throw Object.assign(new Error('SERVER'),{code:'SERVER'}); const rawResults=Array.isArray(rr.data?.results)?rr.data.results:Array.isArray(rr.data)?rr.data:[]; if(!rawResults.length)throw Object.assign(new Error('BAD_RESPONSE'),{code:'BAD_RESPONSE'}); state.bulkResults=rawResults.map(x=>normalizeRemoteResult(x,x?.input||'')); renderBulkTable();updateBulkProgress(state.bulkResults.length,state.bulkItems.length,t('finished')); return state.bulkResults;
+    const statusUrl=base+'/v1/bulk/'+encodeURIComponent(jobId); const resultsUrl=base+'/v1/bulk/'+encodeURIComponent(jobId)+'/results'; let statusData=null; const deadline=Date.now()+BULK_POLL_MAX_MS;
+    while(true){if(state.bulkAbort?.aborted)throw new DOMException('Aborted','AbortError'); if(Date.now()>deadline)throw Object.assign(new Error('TIMEOUT'),{code:'TIMEOUT'}); while(state.bulkPaused){await sleep(200);if(state.bulkAbort?.aborted)throw new DOMException('Aborted','AbortError');}
+      const sr=await fetchJson(statusUrl,{headers:getApiHeaders(false)},15000,state.bulkAbort?.signal||null); if(!sr.ok){if(sr.status===401||sr.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'});if(sr.status===429)throw Object.assign(new Error('RATE'),{code:'RATE'});throw Object.assign(new Error('SERVER'),{code:'SERVER'});} statusData=sr.data||{}; const total=Number(statusData.total_records??statusData.total??state.bulkItems.length); const done=Number(statusData.total_processed??statusData.completed??statusData.processed??statusData.finished??0); updateBulkProgress(Math.min(done,total),total,statusData.job_status||t('bulkRunning')); if(statusData.job_status==='Completed'||String(statusData.status).toLowerCase()==='completed')break; await sleep(1200); }
+    const rawResults=[]; let offset=0; const pageSize=50; const expected=Number(statusData?.total_records??statusData?.total??state.bulkItems.length);
+    while(rawResults.length<expected){ if(state.bulkAbort?.aborted)throw new DOMException('Aborted','AbortError'); const rr=await fetchJson(resultsUrl+'?limit='+pageSize+'&offset='+offset,{headers:getApiHeaders(false)},30000,state.bulkAbort?.signal||null); if(!rr.ok){if(rr.status===401||rr.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'});if(rr.status===429)throw Object.assign(new Error('RATE'),{code:'RATE'});throw Object.assign(new Error('SERVER'),{code:'SERVER'});} const chunk=Array.isArray(rr.data?.results)?rr.data.results:Array.isArray(rr.data)?rr.data:[]; if(!chunk.length)break; rawResults.push(...chunk); offset+=chunk.length; if(chunk.length<pageSize)break; }
+    if(!rawResults.length||rawResults.length<Math.min(expected,state.bulkItems.length))throw Object.assign(new Error('BAD_RESPONSE'),{code:'BAD_RESPONSE'}); state.bulkResults=rawResults.map(x=>normalizeRemoteResult(x,x?.input||'')); state.bulkPage=1; renderBulkTable();updateBulkProgress(state.bulkResults.length,state.bulkItems.length,t('finished')); return state.bulkResults;
   }
   async function startBulk(){
     if(state.bulkAbort){showToast(t('stopFirst'));return;} state.bulkItems=[]; prepareBulk(); if(!state.bulkItems.length)return;
     if($('bulkModeSelect').value==='remote'&&!getApiKey()){showToast(t('bulkNotConfigured'),'','error');return;}
     if(!navigator.onLine){showToast(t('networkOffline'),'','error');return;}
-    state.bulkAbort=new AbortController();state.bulkPaused=false;$('bulkStartBtn').disabled=true;$('bulkPauseBtn').disabled=false;$('bulkCancelBtn').disabled=false;
-    try{if($('bulkModeSelect').value==='remote')await remoteBulkJob();else await processBulkBrowser(); const finished=state.bulkResults.length>=state.bulkItems.length && !state.bulkAbort.signal.aborted; if(finished){showToast(t('finished'),'','success');state.bulkResults.forEach(saveHistoryIfEnabled);}}
-    catch(err){if(err.name==='AbortError')showToast(t('bulkCanceled'));else showToast('Bulk verification failed',friendlyError(err),'error');}
-    finally{state.bulkAbort=null;$('bulkStartBtn').disabled=false;$('bulkPauseBtn').disabled=true;$('bulkCancelBtn').disabled=true;renderBulkSummary();}
+    state.bulkAbort=new AbortController();state.bulkPaused=false;$('bulkStartBtn').disabled=true;updateBulkControls();
+    try{if($('bulkModeSelect').value==='remote')await remoteBulkJob();else await processBulkBrowser(); const finished=state.bulkResults.length>=state.bulkItems.length && !state.bulkAbort.signal.aborted; if(finished){showToast(t('finished'),'','success');saveHistoryResultsIfEnabled(state.bulkResults);}}
+    catch(err){if(err.name==='AbortError'){if($('bulkModeSelect').value==='remote')showToast(t('remoteStopWaiting'),t('remoteJobContinues'));else showToast(t('bulkCanceled'));}else showToast(t('bulkVerificationFailed'),friendlyError(err),'error');}
+    finally{state.bulkAbort=null;$('bulkStartBtn').disabled=false;updateBulkControls();renderBulkSummary();}
   }
 
-  function saveHistoryIfEnabled(result){ if(!state.settings.saveHistory)return; try{const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');h.unshift({ts:Date.now(),email:result.normalized||result.input,status:result.status,mode:result.mode,summary:result.explanation});localStorage.setItem(HISTORY_KEY,JSON.stringify(h.slice(0,MAX_HISTORY)));}catch{} }
+  function saveHistoryIfEnabled(result){ if(!state.settings.saveHistory)return; saveHistoryResultsIfEnabled([result]); }
+  function saveHistoryResultsIfEnabled(results){ if(!state.settings.saveHistory||!Array.isArray(results)||!results.length)return; try{const existing=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');const additions=results.map(result=>({ts:Date.now(),email:result.normalized||result.input,status:result.status,mode:result.mode,summary:result.explanation}));localStorage.setItem(HISTORY_KEY,JSON.stringify([...additions,...existing].slice(0,MAX_HISTORY)));}catch{} }
   function renderHistory(){
     const body=$('historyTbody');body.replaceChildren(); let h=[]; try{h=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');}catch{}
     if(!state.settings.saveHistory){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=4;const d=document.createElement('div');d.className='empty';d.textContent=t('noHistory');td.appendChild(d);tr.appendChild(td);body.appendChild(tr);$('enableHistoryBtn').textContent=t('enableHistory');return;}
-    $('enableHistoryBtn').textContent=t('saveHistory'); if(!h.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=4;const d=document.createElement('div');d.className='empty';d.textContent=t('noSavedResults');td.appendChild(d);tr.appendChild(td);body.appendChild(tr);return;}
+    $('enableHistoryBtn').textContent=t('disableHistory'); if(!h.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=4;const d=document.createElement('div');d.className='empty';d.textContent=t('noSavedResults');td.appendChild(d);tr.appendChild(td);body.appendChild(tr);return;}
     h.forEach(r=>{const tr=document.createElement('tr');[formatTime(r.ts),r.email,r.status,r.mode==='remote'?t('modeRemote'):t('modeBrowser')].forEach((v,i)=>{const td=document.createElement('td');if(i===2){const p=document.createElement('span');p.className='pill '+r.status;p.textContent=statusLabel(r.status);td.appendChild(p);}else td.textContent=v;tr.appendChild(td);});body.appendChild(tr);});
   }
   function toggleHistory(){state.settings.saveHistory=!state.settings.saveHistory;saveSettings();renderHistory();showToast(state.settings.saveHistory?t('historyOn'):t('historyOff'),'','success');}
@@ -688,32 +856,42 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   }
   function download(filename,text,mime){const blob=new Blob([text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   function csvCell(v){let s=String(v??'');if(/^[=+\-@]/.test(s))s='\t'+s;return '"'+s.replace(/"/g,'""')+'"';}
-  function exportBulkCsv(){if(!state.bulkResults.length){showToast(t('emptyList'),'','error');return;}const rows=[['Email','Status','Mode','Domain','MX Available','MX Records','SMTP Connected','Deliverable','Catch All','Full Inbox','Disabled','Disposable','Role Account','Provider','Suggestion','Notes']];state.bulkResults.forEach(r=>rows.push([r.normalized||r.input,r.status,r.mode,r.syntax.domain,r.mx.available,r.mx.records.join(' | '),r.smtp.connect,r.smtp.deliverable,r.smtp.catchAll,r.smtp.fullInbox,r.smtp.disabled,r.disposable,r.role,r.provider,r.domain.suggestion,(r.notes||[]).join(' | ')]));download('email-verification-results.csv',rows.map(row=>row.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8');}
+  function exportBulkCsv(){if(!state.bulkResults.length){showToast(t('emptyList'),'','error');return;}const rows=[['Email','Status','Mode','Domain','MX Available','MX Records','SMTP Connected','Deliverable','Catch All','Full Inbox','Disabled','Disposable','Role Account','Provider','Suggestion','Notes']];state.bulkResults.forEach(r=>rows.push([r.normalized||r.input,r.status,r.mode,r.syntax.domain,r.mx.available,r.mx.records.join(' | '),r.smtp.connect,r.smtp.deliverable,r.smtp.catchAll,r.smtp.fullInbox,r.smtp.disabled,r.disposable,r.role,r.provider,r.domain.suggestion,(r.notes||[]).join(' | ')]));download('email-verification-results.csv','\uFEFF'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8');}
   function exportBulkJson(){if(!state.bulkResults.length){showToast(t('emptyList'),'','error');return;}download('email-verification-results.json',JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),results:state.bulkResults},null,2),'application/json;charset=utf-8');}
 
-  function openModal(id){state.lastFocus=document.activeElement;$(id).classList.remove('hidden');const focus=$(id).querySelector('button,input,select,textarea');setTimeout(()=>focus?.focus(),0);}
-  function closeModal(id){$(id).classList.add('hidden');state.lastFocus?.focus?.();state.lastFocus=null;}
-  function updateBulkPrivacy(){ $('bulkPrivacyText').textContent=$('bulkModeSelect').value==='remote'?t('bulkRemotePrivacy'):t('bulkBrowserPrivacy'); }
+  function openModal(id){ if(state.openModalId) closeModal(state.openModalId,false); state.lastFocus=document.activeElement; state.openModalId=id; const modal=$(id); modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; const focus=modal.querySelector('button,input,select,textarea,[tabindex]:not([tabindex="-1"])'); setTimeout(()=>focus?.focus(),0); }
+  function closeModal(id,restore=true){const modal=$(id); if(!modal)return; modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); if(state.openModalId===id)state.openModalId=null; if(!state.openModalId)document.body.style.overflow=''; if(restore){const focus=state.lastFocus;state.lastFocus=null;setTimeout(()=>focus?.focus?.(),0);}}
+  function trapModalFocus(e){ if(e.key!=='Tab'||!state.openModalId)return; const modal=$(state.openModalId); const nodes=[...modal.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])')].filter(el=>!el.disabled&&el.offsetParent!==null); if(!nodes.length)return; const first=nodes[0],last=nodes[nodes.length-1]; if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+  function updateBulkPrivacy(){ $('bulkPrivacyText').textContent=$('bulkModeSelect').value==='remote'?t('bulkRemotePrivacy'):t('bulkBrowserPrivacy'); updateBulkControls(); }
+  function updateBulkControls(){ const active=!!state.bulkAbort; const remote=$('bulkModeSelect').value==='remote'; $('bulkPauseBtn').disabled=!active||remote; $('bulkPauseBtn').textContent=state.bulkPaused?t('resume'):t('pause'); $('bulkCancelBtn').disabled=!active; $('bulkCancelBtn').textContent=active&&remote?t('remoteStopWaiting'):t('cancel'); }
 
   function init(){
     state.language=state.settings.language||'en'; state.theme=state.settings.theme||'system'; state.currentMode=state.settings.defaultMode==='remote'?'remote':'browser';
     setLanguage(state.language); setTheme(state.theme); updateModeUI();
-    $('apiBase').value=state.settings.apiBase||DEFAULT_SETTINGS.apiBase; $('apiAuth').value=getApiAuthMode(); $('defaultMode').value=state.currentMode; $('historyToggle').checked=!!state.settings.saveHistory; $('gravatarToggle').checked=!!state.settings.gravatar; $('rememberKey').checked=!!sessionStorage.getItem(SESSION_KEY); if(sessionStorage.getItem(SESSION_KEY))$('apiKey').value=sessionStorage.getItem(SESSION_KEY); syncApiAuthUI(); renderHistory(); updateBulkPrivacy();
+    $('apiBase').value=state.settings.apiBase||DEFAULT_SETTINGS.apiBase; $('apiAuth').value=getApiAuthMode(); $('defaultMode').value=state.currentMode; $('historyToggle').checked=!!state.settings.saveHistory; $('gravatarToggle').checked=!!state.settings.gravatar; const storedKey=getStoredApiKey(); $('rememberKey').checked=!!storedKey; $('apiKey').value=storedKey; syncApiAuthUI(); renderHistory(); updateBulkPrivacy(); ['settingsModal','helpModal','rawModal'].forEach(id=>$(id).setAttribute('aria-hidden','true'));
     $('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();verifySingle();}});$('verifyBtn').addEventListener('click',verifySingle);$('cancelSingleBtn').addEventListener('click',()=>state.abort?.abort());$('modeSwitchBtn').addEventListener('click',switchMode);$('clearBtn').addEventListener('click',()=>{$('emailInput').value='';$('emailInput').focus();$('resultCard').classList.add('hidden');state.currentResult=null;});$('pasteBtn').addEventListener('click',async()=>{try{$('emailInput').value=await navigator.clipboard.readText();$('emailInput').focus();}catch{showToast(t('pasteUnavailable'),'', 'error');}});
-    $('languageBtn').addEventListener('click',()=>setLanguage(state.language==='en'?'ar':'en')); $('themeBtn').addEventListener('click',()=>setTheme(state.theme==='dark'?'light':state.theme==='light'?'system':'dark'));$('settingsBtn').addEventListener('click',()=>openModal('settingsModal'));$('helpBtn').addEventListener('click',()=>openModal('helpModal'));
+    $('languageBtn').addEventListener('click',()=>setLanguage(state.language==='en'?'ar':'en')); $('themeBtn').addEventListener('click',toggleTheme);$('settingsBtn').addEventListener('click',()=>openModal('settingsModal'));$('helpBtn').addEventListener('click',()=>openModal('helpModal'));
     document.querySelectorAll('.close-modal').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.modal)));document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id);}));
     $('copyResultBtn').addEventListener('click',()=>state.currentResult&&copyText(summaryText(state.currentResult)));$('showRawBtn').addEventListener('click',()=>{if(state.currentRaw){$('rawOutput').textContent=JSON.stringify(state.currentRaw,null,2);openModal('rawModal');}});
-    document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setActiveTab(b.dataset.tab)));$('loadFileBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const text=await f.text();$('bulkInput').value=text;showToast(t('fileLoaded'),f.name,'success');}catch{showToast(t('fileReadFailed'),'','error')}e.target.value='';});$('normalizeBtn').addEventListener('click',prepareBulk);$('bulkStartBtn').addEventListener('click',startBulk);$('bulkPauseBtn').addEventListener('click',()=>{state.bulkPaused=!state.bulkPaused;$('bulkPauseBtn').textContent=state.bulkPaused?t('resume'):t('pause');updateBulkProgress(state.bulkResults.length,state.bulkItems.length,state.bulkPaused?t('bulkPaused'):t('bulkRunning'));});$('bulkCancelBtn').addEventListener('click',()=>state.bulkAbort?.abort());$('exportCsvBtn').addEventListener('click',exportBulkCsv);$('exportJsonBtn').addEventListener('click',exportBulkJson);$('bulkModeSelect').addEventListener('change',updateBulkPrivacy);
-    $('defaultMode').addEventListener('change',e=>{state.settings.defaultMode=e.target.value;saveSettings();if(!state.abort)setMode(e.target.value,true);});$('apiAuth').addEventListener('change',e=>{state.settings.apiAuth=e.target.value==='selfhost'?'selfhost':'saas';saveSettings();syncApiAuthUI();});$('apiBase').addEventListener('change',e=>{const v=normalizeApiBase(e.target.value);if(v){state.settings.apiBase=v;e.target.value=v;saveSettings();}else showToast(t('invalidUrl'),'','error');});$('apiKey').addEventListener('input',e=>{if($('rememberKey').checked)setApiKey(e.target.value.trim(),true);});$('rememberKey').addEventListener('change',e=>setApiKey($('apiKey').value.trim(),e.target.checked));$('testApiBtn').addEventListener('click',testApi);$('historyToggle').addEventListener('change',e=>{state.settings.saveHistory=e.target.checked;saveSettings();renderHistory();});$('gravatarToggle').addEventListener('change',e=>{state.settings.gravatar=e.target.checked;saveSettings();});$('languageSelect').addEventListener('change',e=>setLanguage(e.target.value));$('themeSelect').addEventListener('change',e=>setTheme(e.target.value));$('enableHistoryBtn').addEventListener('click',toggleHistory);$('clearHistoryBtn').addEventListener('click',clearHistory);
-    window.addEventListener('online',()=>showToast('Online',t('onlineRestored'),'success'));window.addEventListener('offline',()=>showToast(t('networkOffline'),'','error'));window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(state.theme==='system')setTheme('system');});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal:not(.hidden)').forEach(m=>closeModal(m.id));}});
+    document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setActiveTab(b.dataset.tab)));$('loadFileBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>MAX_FILE_BYTES){showToast(t('fileTooLarge'),'','error');return;}if(/\.xlsx$/i.test(f.name)){const parsed=await extractEmailsFromXlsx(await f.arrayBuffer());if(parsed.exceeded)throw Object.assign(new Error(t('tooManyFileEmails')),{code:'TOO_MANY_FILE_EMAILS'});if(!parsed.emails.length)throw Object.assign(new Error(t('noEmailsInXlsx')),{code:'NO_EMAILS_IN_FILE'});$('bulkInput').value=parsed.emails.join('\n');showToast(t('fileLoaded'),`${f.name} · ${parsed.emails.length}`,'success');}else{const text=await f.text();if(/\.csv$/i.test(f.name)){const parsed=extractEmailsFromCsv(text);if(parsed.exceeded)throw Object.assign(new Error(t('tooManyFileEmails')),{code:'TOO_MANY_FILE_EMAILS'});if(!parsed.emails.length)throw Object.assign(new Error(t('noEmailsInCsv')),{code:'NO_EMAILS_IN_FILE'});$('bulkInput').value=parsed.emails.join('\n');showToast(t('fileLoaded'),`${f.name} · ${parsed.emails.length}`,'success');}else{$('bulkInput').value=text;showToast(t('fileLoaded'),f.name,'success');}}}catch(err){showToast(t('fileReadFailed'),err?.message||'','error')}finally{e.target.value='';}});$('normalizeBtn').addEventListener('click',prepareBulk);$('bulkStartBtn').addEventListener('click',startBulk);$('bulkPauseBtn').addEventListener('click',()=>{if($('bulkModeSelect').value==='remote')return;state.bulkPaused=!state.bulkPaused;updateBulkControls();updateBulkProgress(state.bulkResults.length,state.bulkItems.length,state.bulkPaused?t('bulkPaused'):t('bulkRunning'));});$('bulkCancelBtn').addEventListener('click',()=>state.bulkAbort?.abort());$('exportCsvBtn').addEventListener('click',exportBulkCsv);$('exportJsonBtn').addEventListener('click',exportBulkJson);$('bulkModeSelect').addEventListener('change',updateBulkPrivacy);$('bulkPrevBtn').addEventListener('click',()=>{state.bulkPage--;renderBulkTable();});$('bulkNextBtn').addEventListener('click',()=>{state.bulkPage++;renderBulkTable();});
+    $('defaultMode').addEventListener('change',e=>{state.settings.defaultMode=e.target.value;saveSettings();if(!state.abort)setMode(e.target.value,true);});$('apiAuth').addEventListener('change',e=>{const previousMode=getApiAuthMode();const current=$('apiKey').value.trim();if($('rememberKey').checked)setApiKey(current,true,previousMode);else setApiKey('',false,previousMode);state.settings.apiAuth=e.target.value==='selfhost'?'selfhost':'saas';saveSettings();const next=getStoredApiKey();$('apiKey').value=next;$('rememberKey').checked=!!next;syncApiAuthUI();});$('apiBase').addEventListener('change',e=>{const v=normalizeApiBase(e.target.value);if(v){state.settings.apiBase=v;e.target.value=v;saveSettings();}else showToast(t('invalidUrl'),'','error');});$('apiKey').addEventListener('input',e=>{if($('rememberKey').checked)setApiKey(e.target.value.trim(),true);});$('rememberKey').addEventListener('change',e=>setApiKey($('apiKey').value.trim(),e.target.checked));$('testApiBtn').addEventListener('click',testApi);$('historyToggle').addEventListener('change',e=>{state.settings.saveHistory=e.target.checked;saveSettings();renderHistory();});$('gravatarToggle').addEventListener('change',e=>{state.settings.gravatar=e.target.checked;saveSettings();});$('languageSelect').addEventListener('change',e=>setLanguage(e.target.value));$('themeSelect').addEventListener('change',e=>setTheme(e.target.value));$('enableHistoryBtn').addEventListener('click',toggleHistory);$('clearHistoryBtn').addEventListener('click',clearHistory);
+    window.addEventListener('online',()=>showToast(t('onlineRestored'),'','success'));window.addEventListener('offline',()=>showToast(t('networkOffline'),'','error'));window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(state.theme==='system')setTheme('system');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.openModalId)closeModal(state.openModalId);else trapModalFocus(e);});
   }
 
   async function testApi(){
     const base=normalizeApiBase($('apiBase').value); if(!base){$('apiTestResult').textContent=t('invalidUrl');return;} state.settings.apiBase=base;saveSettings(); const key=getApiKey(); if(!key){$('apiTestResult').textContent=t('apiNotConfigured');showToast(t('apiNotConfigured'),t('remoteNeedsKey'),'error');return;}
     $('testApiBtn').disabled=true;$('apiTestResult').textContent='…';
-    try{const r=await fetch(base,{method:'GET',headers:getApiHeaders(false),cache:'no-store'}); if(r.status===401||r.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'}); if(r.status>=500)throw Object.assign(new Error('SERVER'),{code:'SERVER'}); $('apiTestResult').textContent=t('testServerReachable');showToast(t('testServerReachable'),'','success');}
-    catch(e){$('apiTestResult').textContent=t('apiFailed');showToast(t('apiFailed'),friendlyError(e),'error');} finally{$('testApiBtn').disabled=false;}
+    try{
+      const probeUrl=base+'/v1/bulk/0';
+      const r=await fetchJson(probeUrl,{method:'GET',headers:getApiHeaders(false)},10000);
+      if(r.status===401||r.status===403)throw Object.assign(new Error('AUTH'),{code:'AUTH'});
+      if(r.status===429)throw Object.assign(new Error('RATE'),{code:'RATE'});
+      if(r.status>=500)throw Object.assign(new Error('SERVER'),{code:'SERVER'});
+      const reachable=r.status===404||r.status===405||r.status===400||r.ok;
+      $('apiTestResult').textContent=reachable?t('testServerReachable'):t('testServerUnknown');
+      showToast(reachable?t('testServerReachable'):t('testServerUnknown'),'','success');
+    } catch(e){$('apiTestResult').textContent=t('apiFailed');showToast(t('apiFailed'),friendlyError(e),'error');} finally{$('testApiBtn').disabled=false;}
   }
 
   init();
